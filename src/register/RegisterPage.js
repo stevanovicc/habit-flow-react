@@ -1,6 +1,9 @@
 import React, { useState } from 'react';
 import { Link,useNavigate } from 'react-router-dom';
-import "./RegisterPage.css"
+import "./RegisterPage.css";
+import { createUserWithEmailAndPassword } from 'firebase/auth';
+import { auth, db } from '../firebase/firebase';
+import { setDoc,doc } from 'firebase/firestore';
 
 const RegisterPage = () => {
  const [fname,setFname] = useState('');   
@@ -9,13 +12,19 @@ const RegisterPage = () => {
   const [password, setPassword] = useState('');
   const navigate = useNavigate();
 
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    console.log('First Name:', fname);
-    console.log('Last Name:', lname);
-    console.log('Email:', email);
-    console.log('Password:', password);
+  const handleSubmit = async (e) => {
+    try {
+      e.preventDefault();
+      const userCred = await createUserWithEmailAndPassword(auth,email,password);
+    console.log(userCred.user);
+    setDoc(doc(db,"users",userCred.user.uid),{
+      firstName:fname, lastName:lname,email:email
+    })
     navigate('/home');
+    } catch (error) {
+      console.error(error)
+    }
+    
   };
 
   return (
