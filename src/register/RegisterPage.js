@@ -10,19 +10,28 @@ const RegisterPage = () => {
  const [lname, setLname] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const[erorMessage,setErorMessage] = useState('');
   const navigate = useNavigate();
 
   const handleSubmit = async (e) => {
+    e.preventDefault();
+    setErorMessage('');
     try {
-      e.preventDefault();
       const userCred = await createUserWithEmailAndPassword(auth,email,password);
-    console.log(userCred.user);
-    setDoc(doc(db,"users",userCred.user.uid),{
+     console.log(userCred.user);
+      setDoc(doc(db,"users",userCred.user.uid),{
       firstName:fname, lastName:lname,email:email
     })
     navigate('/home');
-    } catch (error) {
-      console.error(error)
+    } catch(error) {
+      if (error.code === 'auth/email-already-in-use') {
+        setErorMessage('This email is already in use.');
+      } else if (error.code === 'auth/weak-password') {
+        setErorMessage('Password should be at least 6 characters.');
+      } else {
+        setErorMessage('Failed to register. Please try again.');
+      }
+      console.error(error);
     }
     
   };
@@ -68,6 +77,7 @@ const RegisterPage = () => {
         />
       </div>
       <button type="submit" className='register-button'>Register</button>
+      {erorMessage && <p className="error-message">{erorMessage}</p>}
     </form>
     <Link to="/" className='register-link'>Already have an account? Login Here!</Link>
     </div>
