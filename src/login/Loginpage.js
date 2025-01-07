@@ -1,17 +1,23 @@
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import "./LoginPage.css"
+import { signInWithEmailAndPassword } from 'firebase/auth';
+import { auth } from '../firebase/firebase';
 
 const LoginPage = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const navigate = useNavigate();
 
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    console.log('Email:', email);
-    console.log('Password:', password);
-    navigate('/home');
+  const handleSubmit = async (e) => {
+    try {
+      e.preventDefault();
+      const userCred = await signInWithEmailAndPassword(auth,email,password);
+      navigate('/home');
+    } catch (error) {
+      console.error(error);
+    }
+
   };
 
   return (
