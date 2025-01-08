@@ -1,7 +1,9 @@
 import React from 'react';
 import {useEffect,useState} from 'react';
-import { getAuth,onAuthStateChanged } from 'firebase/auth';
+import {auth} from "../firebase/firebase";
+import { getAuth,onAuthStateChanged,signOut } from 'firebase/auth';
 import { getFirestore,doc,getDoc,collection,addDoc } from 'firebase/firestore';
+import { useNavigate} from 'react-router-dom';
 import "./HomePage.css"
 
 const HomePage = () => {
@@ -14,6 +16,18 @@ const HomePage = () => {
     const [habitFrequency, setHabitFrequency] = useState("everyday");
     const [successMessage, setSuccessMessage] = useState("");
     const [errorMessage, setErrorMessage] = useState("");
+    const navigate = useNavigate();
+
+    const handleLogout = () => {
+        signOut(auth)
+        .then(() => {
+            alert("You have been logged out successfully!");
+            navigate("/");
+        })
+        .catch((error) => {
+            console.error("Logout failed.", error);
+        });
+    };
 
     const handleAddHabitClick = () => {
         setShowHabitForm(true);
@@ -68,6 +82,7 @@ const HomePage = () => {
     }, [auth,db]);
     return (
     <div className='home-container'>
+        <button className='logout-button' onClick={handleLogout}>Logout</button>
         <h1>Welcome to HabitFlow, {userName}!</h1>
         {!showHabitform &&(
         <button onClick={handleAddHabitClick} className='habit-button'>Add Habit</button>
