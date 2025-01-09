@@ -5,6 +5,28 @@ import { getFirestore,doc,getDoc,collection,addDoc } from 'firebase/firestore';
 import { useNavigate} from 'react-router-dom';
 import "./HomePage.css"
 
+
+
+const getCurrentWeek = ( offset = 0) => {
+    const today = new Date();
+    const currentMonday = new Date(today);
+    currentMonday.setDate(today.getDate() - today.getDay() + 1 + offset * 7);
+    console.log("Starting date of the week (Monday):",currentMonday.toDateString());
+
+    const week = [];
+
+    for (let i = 0; i < 7; i++) {
+        const day = new Date(currentMonday);
+        day.setDate(currentMonday.getDate() + i);
+        week.push({
+            name: day.toLocaleDateString('en-US', {weekday: "long"}),
+            date: day.getDate(),
+        });
+    }
+    console.log("Calculated week:", week);
+    return week;
+};
+
 const HomePage = () => {
     const [userName,setUserName] = useState('');
     const auth = getAuth();
@@ -15,7 +37,11 @@ const HomePage = () => {
     const [habitFrequency, setHabitFrequency] = useState("everyday");
     const [successMessage, setSuccessMessage] = useState("");
     const [errorMessage, setErrorMessage] = useState("");
+    const [weekOffset, setWeekOffset] = useState(0);
+    const [week, setWeek] = useState(getCurrentWeek(weekOffset));
+
     const navigate = useNavigate();
+
 
     const handleLogout = () => {
         signOut(auth)
@@ -38,6 +64,7 @@ const HomePage = () => {
                 name: habitName,
                 description: habitDescription,
                 frequency: habitFrequency,
+                createdAt: new Date(),
             };
 
             await addDoc(collection(db,"habits"), habitData);
@@ -60,7 +87,26 @@ const HomePage = () => {
         setShowHabitForm(false);
     }
 
+    const handleNextWeek = () => {
+        setWeekOffset(prevOffset => {
+            const newOffset = prevOffset + 1;
+            console.log("Navigating to next week, new offset:", newOffset);
+            setWeek(getCurrentWeek(newOffset));
+            return newOffset;
+        });
+    };
+    const handlePreviousWeek = () => {
+        setWeekOffset(prevOffset => {
+            const newOffset = prevOffset - 1;
+            console.log("Navigating to previous week, new offset:" , newOffset);
+            setWeek(getCurrentWeek(prevOffset - 1));
+            return prevOffset - 1;
+        });
+    };
+
     useEffect(() => {
+        const newWeek = getCurrentWeek(weekOffset);
+        setWeek(newWeek);
         const fetchUserData = async (user) =>{
             try{
                 const userDoc= await getDoc(doc(db,"users", user.uid));
@@ -78,7 +124,7 @@ const HomePage = () => {
             }
         });
         return unsubscribe;
-    }, [auth,db]);
+    }, [auth,db, weekOffset]);
     return (
     <div className='home-container'>
         <button className='logout-button' onClick={handleLogout}>Logout</button>
@@ -88,6 +134,20 @@ const HomePage = () => {
         )}
         {successMessage && <div className='success-message'>{successMessage}</div>}
         {errorMessage && <div className='error-message'>{errorMessage}</div>}
+
+        <div className='week-view'>
+            <button onClick={handlePreviousWeek} className='arrow-button'>{"<"}</button>
+            {week.map((weekDay, index) =>  {
+                return(
+                    <div key={index} className='week-day'>
+                        <div className='day'>{weekDay.name}</div>
+                        <div className='date'>{weekDay.date}</div>
+                        </div>
+                );
+            })}
+            <button onClick={handleNextWeek} className='arrow-button'>{">"}</button>
+
+        </div>
 
         {showHabitform &&(
             <div className="habit-form">

@@ -16,6 +16,9 @@
     border-radius: 4px;
     cursor: pointer;
     width: 15%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
 
 .habit-button:hover {
@@ -103,4 +106,48 @@
 
 .logout-button:hover {
     background-color: #e60000;
+}
+
+.week-view {
+    display: flex;
+    justify-content: space-around;
+    margin-top: 20px;
+}
+
+.week-day {
+    padding: 14px;
+    background: #d9d9d9;
+    border-radius: 8px;
+    text-align: center;
+    flex: 1;
+    margin: 0 5px;
+    font-size: 16px;
+    font-weight: bold;
+    color: #111;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    box-shadow: 0 3px 5px rgba(0, 0, 0, 0.15);
+}
+
+.day {
+    font-size: 18px;
+}
+
+.date {
+    font-size: 16px;
+    margin-top: 6px;
+}
+
+.arrow-button {
+    background: none;
+    border: none;
+    font-size: 24px;
+    cursor: pointer;
+    padding: 10px;
+    color: #333;
+}
+
+.arrow-button:hover {
+    color: #000;
 }
