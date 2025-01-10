@@ -1,7 +1,7 @@
 import React from 'react';
 import {useEffect,useState} from 'react';
 import { getAuth,onAuthStateChanged,signOut } from 'firebase/auth';
-import { getFirestore,doc,getDoc,collection,addDoc } from 'firebase/firestore';
+import { getFirestore,doc,getDoc,collection,addDoc, getDocs,serverTimestamp } from 'firebase/firestore';
 import { useNavigate} from 'react-router-dom';
 import "./HomePage.css"
 
@@ -11,7 +11,6 @@ const getCurrentWeek = ( offset = 0) => {
     const today = new Date();
     const currentMonday = new Date(today);
     currentMonday.setDate(today.getDate() - today.getDay() + 1 + offset * 7);
-    console.log("Starting date of the week (Monday):",currentMonday.toDateString());
 
     const week = [];
 
@@ -23,7 +22,6 @@ const getCurrentWeek = ( offset = 0) => {
             date: day.getDate(),
         });
     }
-    console.log("Calculated week:", week);
     return week;
 };
 
@@ -39,8 +37,10 @@ const HomePage = () => {
     const [errorMessage, setErrorMessage] = useState("");
     const [weekOffset, setWeekOffset] = useState(0);
     const [week, setWeek] = useState(getCurrentWeek(weekOffset));
+    const [habits, setHabits] = useState([]);
 
     const navigate = useNavigate();
+
 
 
     const handleLogout = () => {
@@ -64,7 +64,7 @@ const HomePage = () => {
                 name: habitName,
                 description: habitDescription,
                 frequency: habitFrequency,
-                createdAt: new Date(),
+                createdAt: serverTimestamp(),
             };
 
             await addDoc(collection(db,"habits"), habitData);
@@ -105,8 +105,27 @@ const HomePage = () => {
     };
 
     useEffect(() => {
+
+        const fetchHabits = async() => {
+            const habitCollection = await getDocs(collection(db, "habits"));
+            const habitList = habitCollection.docs.map(doc => ({
+              id: doc.id,
+                ...doc.data(),
+                createdAt: doc.data().createdAt ? doc.data().createdAt.toDate() : new Date()
+        }));
+        console.log("Fetched habits:", habitList);
+        setHabits(habitList);
+     };
+
+
+        const fetchData = async () => {
+            await fetchHabits();
+        };
+        fetchData();
+
         const newWeek = getCurrentWeek(weekOffset);
         setWeek(newWeek);
+
         const fetchUserData = async (user) =>{
             try{
                 const userDoc= await getDoc(doc(db,"users", user.uid));
@@ -138,10 +157,32 @@ const HomePage = () => {
         <div className='week-view'>
             <button onClick={handlePreviousWeek} className='arrow-button'>{"<"}</button>
             {week.map((weekDay, index) =>  {
+                const matchingHabits = habits.filter((habit) => {
+                    const habitDate = new Date(habit.createdAt);
+                    const today = new Date(weekDay.date);
+                    today.setFullYear(new Date().getFullYear(), new Date().getMonth(), weekDay.date);
+
+                    if (habit.frequency === "everyday"){
+                        return true;
+                    }else if (habit.frequency === "once-a-week"){
+                        return habitDate.getDay() === today.getDay();
+                    }else if (habit.frequency === "once-a-month"){
+                        return habitDate.getDate() === today.getDate() &&
+                               habitDate.getMonth() === today.getMonth();
+                    }
+                    return false;
+                });
                 return(
                     <div key={index} className='week-day'>
                         <div className='day'>{weekDay.name}</div>
                         <div className='date'>{weekDay.date}</div>
+                        {matchingHabits.length > 0 && (
+                            <ul className='habit-list'>
+                                {matchingHabits.map((habit, idx) => (
+                                    <li key={idx}>{habit.name}</li>
+                                ))}
+                            </ul>
+                        )}
                         </div>
                 );
             })}

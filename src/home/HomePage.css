@@ -151,3 +151,14 @@
 .arrow-button:hover {
     color: #000;
 }
+
+.habit-list {
+    padding: 0;
+    margin: 0;
+    list-style-type: none;
+}
+
+.habit-list li {
+    font-size: 0.9rem;
+    color: #444;
+}
