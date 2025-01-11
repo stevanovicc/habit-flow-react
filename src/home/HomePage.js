@@ -1,7 +1,7 @@
 import React from 'react';
 import {useEffect,useState} from 'react';
 import { getAuth,onAuthStateChanged,signOut } from 'firebase/auth';
-import { getFirestore,doc,getDoc,collection,addDoc, getDocs,serverTimestamp } from 'firebase/firestore';
+import { getFirestore,doc,getDoc,collection,addDoc, getDocs,serverTimestamp, updateDoc } from 'firebase/firestore';
 import { useNavigate} from 'react-router-dom';
 import "./HomePage.css"
 
@@ -14,12 +14,28 @@ const getCurrentWeek = ( offset = 0) => {
 
     const week = [];
 
+    const getOrdinalSuffix = (day) =>{
+        if (day > 3 && day < 21) return 'th';
+        switch (day % 10){
+            case 1: return 'st';
+            case 2: return 'nd';
+            case 3: return 'rd';
+            default: return 'th';
+        }
+    };
+
     for (let i = 0; i < 7; i++) {
         const day = new Date(currentMonday);
         day.setDate(currentMonday.getDate() + i);
+
+        const dayName = day.toLocaleDateString('en-US', {weekday: "long"});
+        const monthName = day.toLocaleDateString('en-US',{month:"long"});
+        const date = day.getDate();
+        const ordinialSuffix = getOrdinalSuffix(date);
+
         week.push({
-            name: day.toLocaleDateString('en-US', {weekday: "long"}),
-            date: day.getDate(),
+            name: `${dayName}, ${date}${ordinialSuffix} ${monthName}`,
+            rawDate: day,
         });
     }
     return week;
@@ -38,8 +54,51 @@ const HomePage = () => {
     const [weekOffset, setWeekOffset] = useState(0);
     const [week, setWeek] = useState(getCurrentWeek(weekOffset));
     const [habits, setHabits] = useState([]);
+    const [congratsMessage, setCongratsMessage] = useState("");
 
     const navigate = useNavigate();
+
+
+
+    const handleToggleCompletition = async (habitId, date) => {
+        try{
+            const habitRef = doc(db,"habits", habitId);
+            const habitDoc = await getDoc(habitRef);
+
+            if (habitDoc.exists()) {
+                const habitData = habitDoc.data();
+                const completedDates = habitData.completedDates || [];
+
+                const dateString = date.toISOString().split("T")[0];
+
+                const isCurrentlyCompleted = completedDates.includes(dateString);
+
+                let updatedDates;
+                if (completedDates.includes(dateString)) {
+                    updatedDates = completedDates.filter(d => d !== dateString);
+                } else {
+                    updatedDates = [...completedDates, dateString];
+                }
+                await updateDoc(habitRef, {completedDates: updatedDates});
+                setHabits(prevHabits =>
+                    prevHabits.map(habit =>
+                        habit.id === habitId
+                        ?{...habit, completedDates:updatedDates}
+                        : habit
+                    )
+                );
+
+                if (!isCurrentlyCompleted) {
+                    setCongratsMessage("🎉 Congratulations on completing a habit! 🎉");
+                    setTimeout(() => setCongratsMessage(""), 3000);
+                }
+            }else {
+                console.error("Habit document doesn't exist");
+            }
+        } catch (error){
+            console.error("Error toggling completiton", error);
+        }
+    };
 
 
 
@@ -65,6 +124,7 @@ const HomePage = () => {
                 description: habitDescription,
                 frequency: habitFrequency,
                 createdAt: serverTimestamp(),
+                completedDates: [],
             };
 
             await addDoc(collection(db,"habits"), habitData);
@@ -111,7 +171,8 @@ const HomePage = () => {
             const habitList = habitCollection.docs.map(doc => ({
               id: doc.id,
                 ...doc.data(),
-                createdAt: doc.data().createdAt ? doc.data().createdAt.toDate() : new Date()
+                createdAt: doc.data().createdAt ? doc.data().createdAt.toDate() : new Date(),
+                completedDates:doc.data().completedDates || []
         }));
         console.log("Fetched habits:", habitList);
         setHabits(habitList);
@@ -151,6 +212,7 @@ const HomePage = () => {
         {!showHabitform &&(
         <button onClick={handleAddHabitClick} className='habit-button'>Add Habit</button>
         )}
+        {congratsMessage &&( <div className='congrats-message'>{congratsMessage}</div>)}
         {successMessage && <div className='success-message'>{successMessage}</div>}
         {errorMessage && <div className='error-message'>{errorMessage}</div>}
 
@@ -159,8 +221,11 @@ const HomePage = () => {
             {week.map((weekDay, index) =>  {
                 const matchingHabits = habits.filter((habit) => {
                     const habitDate = new Date(habit.createdAt);
-                    const today = new Date(weekDay.date);
-                    today.setFullYear(new Date().getFullYear(), new Date().getMonth(), weekDay.date);
+                    const today = new Date(new Date().getFullYear(), new Date().getMonth(), weekDay.rawDate.getDate());
+
+                    if (today.getTime() < habitDate.getTime() - 1000 * 60 * 60 * 24) {
+                        return false;
+                    }
 
                     if (habit.frequency === "everyday"){
                         return true;
@@ -175,12 +240,24 @@ const HomePage = () => {
                 return(
                     <div key={index} className='week-day'>
                         <div className='day'>{weekDay.name}</div>
-                        <div className='date'>{weekDay.date}</div>
                         {matchingHabits.length > 0 && (
                             <ul className='habit-list'>
-                                {matchingHabits.map((habit, idx) => (
-                                    <li key={idx}>{habit.name}</li>
-                                ))}
+                                {matchingHabits.map((habit, idx) => {
+                                    const isCompleted = habit.completedDates?.includes(weekDay.rawDate.toISOString().split("T")[0]);
+
+                                    return(
+                                        <li key={idx}>
+                                            <label>
+                                                <input
+                                                    type='checkbox'
+                                                    checked={isCompleted}
+                                                    onChange={() => handleToggleCompletition(habit.id, weekDay.rawDate)}
+                                                />
+                                                {habit.name}
+                                            </label>
+                                        </li>
+                                    );
+                                })}
                             </ul>
                         )}
                         </div>
