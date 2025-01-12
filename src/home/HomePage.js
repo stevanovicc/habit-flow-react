@@ -1,9 +1,12 @@
 import React from 'react';
 import {useEffect,useState} from 'react';
 import { getAuth,onAuthStateChanged,signOut } from 'firebase/auth';
-import { getFirestore,doc,getDoc,collection,addDoc, getDocs,serverTimestamp, updateDoc } from 'firebase/firestore';
+import { getFirestore,doc,getDoc,collection, getDocs, updateDoc } from 'firebase/firestore';
 import { useNavigate} from 'react-router-dom';
-import "./HomePage.css"
+import "./HomePage.css";
+import "./HabitForm";
+import HabitForm from './HabitForm';
+import DueToday from "./DueToday";
 
 
 
@@ -46,20 +49,16 @@ const HomePage = () => {
     const auth = getAuth();
     const db = getFirestore();
     const [showHabitform, setShowHabitForm] = useState(false);
-    const [habitName,setHabitName] = useState("");
-    const [habitDescription, setHabitDescription] = useState("");
-    const [habitFrequency, setHabitFrequency] = useState("everyday");
-    const [successMessage, setSuccessMessage] = useState("");
-    const [errorMessage, setErrorMessage] = useState("");
     const [weekOffset, setWeekOffset] = useState(0);
     const [week, setWeek] = useState(getCurrentWeek(weekOffset));
     const [habits, setHabits] = useState([]);
     const [congratsMessage, setCongratsMessage] = useState("");
     const [habitsDueToday, setHabitsDueToday] = useState([]);
     const [showDueTodayMessage, setShowDueTodayMessage] = useState(false);
+    const [successMessage, setSuccessMessage] = useState("");
+    const [errorMessage, setErrorMessage] = useState("");
 
     const navigate = useNavigate();
-
 
 
     const handleToggleCompletition = async (habitId, date) => {
@@ -117,31 +116,6 @@ const HomePage = () => {
         setShowHabitForm(true);
     }
 
-    const handleSubmit = async () => {
-        try{
-            const habitData = {
-                name: habitName,
-                description: habitDescription,
-                frequency: habitFrequency,
-                createdAt: serverTimestamp(),
-                completedDates: [],
-            };
-
-            await addDoc(collection(db,"habits"), habitData);
-            setHabitName("");
-            setHabitDescription("");
-            setHabitFrequency("everyday");
-            setShowHabitForm(false);
-
-            setSuccessMessage("Habit added successfully!");
-            setTimeout(() => setSuccessMessage(""), 3000);
-        }catch(error){
-            setErrorMessage("Failed to add habit. Please try again.");
-            setTimeout(() => setErrorMessage(""), 3000);
-            console.error("Error adding habit: ", error);
-        }
-
-    };
 
     const handleCancel = () => {
         setShowHabitForm(false);
@@ -294,61 +268,11 @@ const HomePage = () => {
 
         </div>
         {showDueTodayMessage && (
-            <div className='due-today-message'>
-                <h2> Habits Due Today:</h2>
-                <ul className='due-today-list'>
-                    {habitsDueToday.map((habit,index) => (
-                        <li key={index}>{habit.name}</li>
-                    ))}
-                </ul>
-                <button
-                    onClick={() => setShowDueTodayMessage(false)}
-                    className='close-messsage-button'
-                >
-                    Close
-                </button>
-            </div>
+            <DueToday setShowDueTodayMessage={setShowDueTodayMessage} habitsDueToday={habitsDueToday}/>
         )}
 
         {showHabitform &&(
-            <div className="habit-form">
-                <h2 className='habit-h2'>Add a New Habit</h2>
-                <label className='habit-label'>
-                    Habit Name:
-                    <input
-                    type='text'
-                    value={habitName}
-                    onChange={(e) => setHabitName(e.target.value)}
-                    className='habit-input'
-                    />
-                </label>
-                <br/>
-                <label className='habit-label'>
-                    Description:
-                    <input
-                    type='text'
-                    value={habitDescription}
-                    onChange={(e) => setHabitDescription(e.target.value)}
-                    className='habit-input'
-                    />
-                </label>
-                <br/>
-                <label className='habit-label'>
-                    Frequency
-                    <select
-                    value={habitFrequency}
-                    onChange={(e) => setHabitFrequency(e.target.value)}
-                    className='habit-select'
-                    >
-                    <option value="everyday">Everyday</option> {/*TODO try with enum */}
-                    <option value="once-a-week">Once a week</option>
-                    <option value="once-a-month">Once a month</option>
-                    </select>
-                </label>
-                <br/>
-                <button onClick={handleSubmit} className='habit-button-form'>Save</button>
-                <button onClick={handleCancel} className='habit-button-form'>Cancel</button>
-            </div>
+            <HabitForm handleCancel={handleCancel} setSuccessMessage={setSuccessMessage} setErrorMessage={setErrorMessage}/>
         )}
     </div>
     );
