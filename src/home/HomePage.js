@@ -102,8 +102,6 @@ const HomePage = () => {
         }
     };
 
-
-
     const handleLogout = () => {
         signOut(auth)
         .then(() => {
@@ -202,7 +200,6 @@ const HomePage = () => {
                 createdAt: doc.data().createdAt ? doc.data().createdAt.toDate() : new Date(),
                 completedDates:doc.data().completedDates || []
         }));
-        console.log("Fetched habits:", habitList);
         setHabits(habitList);
      };
 
