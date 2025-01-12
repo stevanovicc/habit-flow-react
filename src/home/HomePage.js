@@ -7,6 +7,7 @@ import "./HomePage.css";
 import "./HabitForm";
 import HabitForm from './HabitForm';
 import DueToday from "./DueToday";
+import HabitList from "./HabitList";
 
 
 
@@ -242,24 +243,7 @@ const HomePage = () => {
                     <div key={index} className='week-day'>
                         <div className='day'>{weekDay.name}</div>
                         {matchingHabits.length > 0 && (
-                            <ul className='habit-list'>
-                                {matchingHabits.map((habit, idx) => {
-                                    const isCompleted = habit.completedDates?.includes(weekDay.rawDate.toISOString().split("T")[0]);
-
-                                    return(
-                                        <li key={idx}>
-                                            <label>
-                                                <input
-                                                    type='checkbox'
-                                                    checked={isCompleted}
-                                                    onChange={() => handleToggleCompletition(habit.id, weekDay.rawDate)}
-                                                />
-                                                {habit.name}
-                                            </label>
-                                        </li>
-                                    );
-                                })}
-                            </ul>
+                            <HabitList handleToggleCompletition={handleToggleCompletition} matchingHabits={matchingHabits} weekDay={weekDay}/>
                         )}
                         </div>
                 );
