@@ -55,6 +55,8 @@ const HomePage = () => {
     const [week, setWeek] = useState(getCurrentWeek(weekOffset));
     const [habits, setHabits] = useState([]);
     const [congratsMessage, setCongratsMessage] = useState("");
+    const [habitsDueToday, setHabitsDueToday] = useState([]);
+    const [showDueTodayMessage, setShowDueTodayMessage] = useState(false);
 
     const navigate = useNavigate();
 
@@ -166,6 +168,32 @@ const HomePage = () => {
 
     useEffect(() => {
 
+        const today = new Date();
+        const todayString = today.toISOString().split('T')[0];
+
+        const dueToday = habits.filter((habit) => {
+            const habitDate = new Date(habit.createdAt);
+
+            if (habit.frequency === "everyday"){
+                return true;
+            } else if (habit.frequency === "once-a-week"){
+                return habitDate.getDay() === today.getDay();
+            } else if (habit.frequency === "once-a-month"){
+                return habitDate.getDate() === today.getDate();
+            }
+            return false;
+        });
+
+        const incompleteHabits = dueToday.filter(
+            (habit) => !habit.completedDates.includes(todayString)
+        );
+
+        setHabitsDueToday(incompleteHabits);
+
+        if (incompleteHabits.length > 0){
+            setShowDueTodayMessage(true);
+        }
+
         const fetchHabits = async() => {
             const habitCollection = await getDocs(collection(db, "habits"));
             const habitList = habitCollection.docs.map(doc => ({
@@ -204,7 +232,7 @@ const HomePage = () => {
             }
         });
         return unsubscribe;
-    }, [auth,db, weekOffset]);
+    }, [auth,db, weekOffset, habits]);
     return (
     <div className='home-container'>
         <button className='logout-button' onClick={handleLogout}>Logout</button>
@@ -220,20 +248,22 @@ const HomePage = () => {
             <button onClick={handlePreviousWeek} className='arrow-button'>{"<"}</button>
             {week.map((weekDay, index) =>  {
                 const matchingHabits = habits.filter((habit) => {
-                    const habitDate = new Date(habit.createdAt);
-                    const today = new Date(new Date().getFullYear(), new Date().getMonth(), weekDay.rawDate.getDate());
+                    const habitCreationDate = new Date(habit.createdAt);
+                    const currentDate = new Date(weekDay.rawDate);
 
-                    if (today.getTime() < habitDate.getTime() - 1000 * 60 * 60 * 24) {
+                    if (currentDate < habitCreationDate) {
                         return false;
                     }
 
                     if (habit.frequency === "everyday"){
                         return true;
                     }else if (habit.frequency === "once-a-week"){
-                        return habitDate.getDay() === today.getDay();
+                        return habitCreationDate.getDay() === currentDate.getDay();
                     }else if (habit.frequency === "once-a-month"){
-                        return habitDate.getDate() === today.getDate() &&
-                               habitDate.getMonth() === today.getMonth();
+                        return (
+                            habitCreationDate.getDate() === currentDate.getDate() &&
+                            habitCreationDate.getMonth() === currentDate.getMonth()
+                        );
                     }
                     return false;
                 });
@@ -266,6 +296,22 @@ const HomePage = () => {
             <button onClick={handleNextWeek} className='arrow-button'>{">"}</button>
 
         </div>
+        {showDueTodayMessage && (
+            <div className='due-today-message'>
+                <h2> Habits Due Today:</h2>
+                <ul className='due-today-list'>
+                    {habitsDueToday.map((habit,index) => (
+                        <li key={index}>{habit.name}</li>
+                    ))}
+                </ul>
+                <button
+                    onClick={() => setShowDueTodayMessage(false)}
+                    className='close-messsage-button'
+                >
+                    Close
+                </button>
+            </div>
+        )}
 
         {showHabitform &&(
             <div className="habit-form">
