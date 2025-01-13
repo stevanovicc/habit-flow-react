@@ -1,5 +1,6 @@
 import React from 'react';
 import HabitList from "./HabitList";
+import "./HomePage.css";
 
 
 const Calendar = (props) => {
