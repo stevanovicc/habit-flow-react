@@ -1,6 +1,7 @@
 import { addDoc, collection, serverTimestamp } from "firebase/firestore";
 import React, { useState } from "react";
 import { db } from "../firebase/firebase";
+import "./HomePage.css"
 
 
 const HabitForm = (props) => {

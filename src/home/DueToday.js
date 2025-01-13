@@ -1,4 +1,5 @@
 import React from 'react';
+import "./HomePage.css"
 
 const DueToday = (props) =>{
     return(
@@ -9,12 +10,6 @@ const DueToday = (props) =>{
                         <li key={index}>{habit.name}</li>
                     ))}
                 </ul>
-                <button
-                    onClick={() => props.setShowDueTodayMessage(false)}
-                    className='close-messsage-button'
-                >
-                    Close
-                </button>
             </div>
     );
 }

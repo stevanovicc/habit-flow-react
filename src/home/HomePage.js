@@ -7,7 +7,7 @@ import "./HomePage.css";
 import "./HabitForm";
 import HabitForm from './HabitForm';
 import DueToday from "./DueToday";
-import HabitList from "./HabitList";
+import Calendar from "./Calendar";
 
 
 
@@ -216,41 +216,7 @@ const HomePage = () => {
         {successMessage && <div className='success-message'>{successMessage}</div>}
         {errorMessage && <div className='error-message'>{errorMessage}</div>}
 
-        <div className='week-view'>
-            <button onClick={handlePreviousWeek} className='arrow-button'>{"<"}</button>
-            {week.map((weekDay, index) =>  {
-                const matchingHabits = habits.filter((habit) => {
-                    const habitCreationDate = new Date(habit.createdAt);
-                    const currentDate = new Date(weekDay.rawDate);
-
-                    if (currentDate < habitCreationDate) {
-                        return false;
-                    }
-
-                    if (habit.frequency === "everyday"){
-                        return true;
-                    }else if (habit.frequency === "once-a-week"){
-                        return habitCreationDate.getDay() === currentDate.getDay();
-                    }else if (habit.frequency === "once-a-month"){
-                        return (
-                            habitCreationDate.getDate() === currentDate.getDate() &&
-                            habitCreationDate.getMonth() === currentDate.getMonth()
-                        );
-                    }
-                    return false;
-                });
-                return(
-                    <div key={index} className='week-day'>
-                        <div className='day'>{weekDay.name}</div>
-                        {matchingHabits.length > 0 && (
-                            <HabitList handleToggleCompletition={handleToggleCompletition} matchingHabits={matchingHabits} weekDay={weekDay}/>
-                        )}
-                        </div>
-                );
-            })}
-            <button onClick={handleNextWeek} className='arrow-button'>{">"}</button>
-
-        </div>
+        <Calendar handlePreviousWeek={handlePreviousWeek} handleNextWeek={handleNextWeek} week={week} habits={habits} handleToggleCompletition={handleToggleCompletition}></Calendar>
         {showDueTodayMessage && (
             <DueToday setShowDueTodayMessage={setShowDueTodayMessage} habitsDueToday={habitsDueToday}/>
         )}
