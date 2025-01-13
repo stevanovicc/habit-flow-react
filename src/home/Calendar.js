@@ -2,6 +2,20 @@ import React from 'react';
 import HabitList from "./HabitList";
 import "./HomePage.css";
 
+const calculateCurrentStreak = (habits, date) => {
+    
+    const formattedDate = date.toISOString().split("T")[0];
+
+    const completedHabits = habits.filter((habit) =>
+        habit.completedDates?.includes(formattedDate)
+    );
+
+    return completedHabits.length === habits.length ? 1 : 0;
+};
+
+const calculateLongestStreak = (habits) => {
+    return Math.max(...habits.map((habit) => habit.longestStreak || 0), 0);
+};
 
 const Calendar = (props) => {
     return(
@@ -14,7 +28,7 @@ const Calendar = (props) => {
 
                 if (currentDate < habitCreationDate) {
                     return false;
-                }
+                }   
 
                 if (habit.frequency === "everyday"){
                     return true;
@@ -28,11 +42,21 @@ const Calendar = (props) => {
                 }
                 return false;
             });
+
+            const currentStreak = calculateCurrentStreak(matchingHabits, weekDay.rawDate);
+            const longestStreak = calculateLongestStreak(matchingHabits);
+
             return(
                 <div key={index} className='week-day'>
                     <div className='day'>{weekDay.name}</div>
                     {matchingHabits.length > 0 && (
+                        <>
+                        <div>
+                            <div>🔥 Current Streak: {currentStreak} days</div>
+                            <div>🏆 Longest Streak: {longestStreak} days</div>
+                        </div>
                         <HabitList handleToggleCompletition={props.handleToggleCompletition} matchingHabits={matchingHabits} weekDay={weekDay}/>
+                        </>
                     )}
                     </div>
             );

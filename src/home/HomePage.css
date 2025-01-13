@@ -244,3 +244,13 @@
 .close-message-button:hover {
     background-color: #d32f2f;
 }
+
+.streak-info {
+    margin-left: 20px;
+    font-size: 0.9rem;
+    color: #555;
+}
+
+.streak-info p {
+    margin: 0;
+}

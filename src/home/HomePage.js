@@ -70,35 +70,65 @@ const HomePage = () => {
             if (habitDoc.exists()) {
                 const habitData = habitDoc.data();
                 const completedDates = habitData.completedDates || [];
-
                 const dateString = date.toISOString().split("T")[0];
 
                 const isCurrentlyCompleted = completedDates.includes(dateString);
-
                 let updatedDates;
-                if (completedDates.includes(dateString)) {
-                    updatedDates = completedDates.filter(d => d !== dateString);
+
+                if (isCurrentlyCompleted) {
+                    updatedDates = completedDates.filter((d) => d !== dateString);
                 } else {
                     updatedDates = [...completedDates, dateString];
                 }
-                await updateDoc(habitRef, {completedDates: updatedDates});
-                setHabits(prevHabits =>
-                    prevHabits.map(habit =>
-                        habit.id === habitId
-                        ?{...habit, completedDates:updatedDates}
-                        : habit
-                    )
-                );
+                
+                const sortedDates = [...updatedDates].sort();
+
+                const calculateStreak = (dates) => {
+                    let currentStreak = 0;
+                    let longestStreak = habitData.longestStreak || 0;
+
+                    for (let i = dates.length - 1; i >= 0; i--){
+                        const currentDate = new Date(dates[i]);
+                        const previousDate = new Date(dates[i - 1]);
+
+                        if (i === 0 || currentDate - previousDate > 24 * 60 * 60 * 1000){
+                            break;
+                        }
+                        currentStreak++;
+                    }
+                    longestStreak = Math.max(longestStreak, currentStreak);
+                    return {currentStreak, longestStreak};
+                };
+
+                const { currentStreak,longestStreak } = calculateStreak(sortedDates);
+
+                await updateDoc(habitRef, {
+                    completedDates: updatedDates,
+                    currentStreak: currentStreak,
+                    longestStreak: longestStreak,
+                });
+
+                setHabits((prevHabits) =>
+                        prevHabits.map((habit) => 
+                            habit.id === habitId
+                                    ? { ...habit, completedDates: updatedDates, currentStreak, longestStreak }
+                                      :habit
+                            )
+                        );
 
                 if (!isCurrentlyCompleted) {
-                    setCongratsMessage("🎉 Congratulations on completing a habit! 🎉");
+                    if (currentStreak > 1) {
+                        setCongratsMessage(`🔥 You are on a ${currentStreak}-day streak! Keep it up!`);
+                    } else {
+                        setCongratsMessage("🎉 Congratulations on completing a habit! 🎉");
+                    }
                     setTimeout(() => setCongratsMessage(""), 3000);
                 }
             }else {
                 console.error("Habit document doesn't exist");
             }
-        } catch (error){
-            console.error("Error toggling completiton", error);
+        } catch(error){
+            console.error("Error toggling completion", error);
         }
     };
 
@@ -169,11 +199,13 @@ const HomePage = () => {
 
         const fetchHabits = async() => {
             const habitCollection = await getDocs(collection(db, "habits"));
-            const habitList = habitCollection.docs.map(doc => ({
+            const habitList = habitCollection.docs.map((doc) => ({
               id: doc.id,
                 ...doc.data(),
                 createdAt: doc.data().createdAt ? doc.data().createdAt.toDate() : new Date(),
-                completedDates:doc.data().completedDates || []
+                completedDates:doc.data().completedDates || [],
+                currentStreak: doc.data().currentStreak || 0,
+                longestStreak: doc.data().longestStreak || 0,
         }));
         setHabits(habitList);
      };
