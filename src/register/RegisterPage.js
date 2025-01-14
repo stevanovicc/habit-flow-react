@@ -4,6 +4,7 @@ import "./RegisterPage.css";
 import { createUserWithEmailAndPassword } from 'firebase/auth';
 import { auth, db } from '../firebase/firebase';
 import { setDoc,doc } from 'firebase/firestore';
+import Header from "../components/Header";
 
 const RegisterPage = () => {
  const [fname,setFname] = useState('');   
@@ -38,6 +39,7 @@ const RegisterPage = () => {
 
   return (
     <div className='register-container'>
+      <Header/>
         <h1 className='register-h1'>Register</h1>
     <form onSubmit={handleSubmit} className='register-form'>
         <div className='register-div'>

@@ -8,6 +8,7 @@ import "./HabitForm";
 import HabitForm from './HabitForm';
 import DueToday from "./DueToday";
 import Calendar from "./Calendar";
+import Header from "../components/Header";
 
 
 
@@ -239,6 +240,7 @@ const HomePage = () => {
     }, [auth,db, weekOffset, habits]);
     return (
     <div className='home-container'>
+        <Header/>
         <button className='logout-button' onClick={handleLogout}>Logout</button>
         <h1>Welcome to HabitFlow, {userName}!</h1>
         {!showHabitform &&(
