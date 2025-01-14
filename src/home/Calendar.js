@@ -2,22 +2,38 @@ import React from 'react';
 import HabitList from "./HabitList";
 import "./HomePage.css";
 
-const calculateCurrentStreak = (habits, date) => {
-    
-    const formattedDate = date.toISOString().split("T")[0];
+const calculateOverallCurrentStreak = (habits, week) => {
+    if (habits.length === 0) return 0;
 
-    const completedHabits = habits.filter((habit) =>
-        habit.completedDates?.includes(formattedDate)
-    );
+    let streak = 0;
 
-    return completedHabits.length === habits.length ? 1 : 0;
+ 
+    for (let i = week.length - 1; i >= 0; i--) {
+        const formattedDate = week[i].rawDate.toISOString().split("T")[0];
+        const allHabitsCompleted = habits.every(habit => 
+            habit.completedDates?.includes(formattedDate)
+        );
+
+        if (allHabitsCompleted) {
+            streak++;
+        } else {
+            break;
+        }
+    }
+
+    return streak;
 };
 
-const calculateLongestStreak = (habits) => {
+const calculateOverallLongestStreak = (habits) => {
     return Math.max(...habits.map((habit) => habit.longestStreak || 0), 0);
 };
 
+
 const Calendar = (props) => {
+
+    const overallCurrentStreak = calculateOverallCurrentStreak(props.habits, props.week);
+    const overallLongestStreak = calculateOverallLongestStreak(props.habits);
+
     return(
         <div className='week-view'>
         <button onClick={props.handlePreviousWeek} className='arrow-button'>{"<"}</button>
@@ -42,26 +58,20 @@ const Calendar = (props) => {
                 }
                 return false;
             });
-
-            const currentStreak = calculateCurrentStreak(matchingHabits, weekDay.rawDate);
-            const longestStreak = calculateLongestStreak(matchingHabits);
-
             return(
                 <div key={index} className='week-day'>
                     <div className='day'>{weekDay.name}</div>
                     {matchingHabits.length > 0 && (
-                        <>
-                        <div>
-                            <div>🔥 Current Streak: {currentStreak} days</div>
-                            <div>🏆 Longest Streak: {longestStreak} days</div>
-                        </div>
                         <HabitList handleToggleCompletition={props.handleToggleCompletition} matchingHabits={matchingHabits} weekDay={weekDay}/>
-                        </>
                     )}
                     </div>
             );
         })}
         <button onClick={props.handleNextWeek} className='arrow-button'>{">"}</button>
+        <div className="streak-message">
+            <div>🔥 Current Streak: {overallCurrentStreak} days</div>
+             <div>🏆 Longest Streak: {overallLongestStreak} days</div>
+        </div>
 
     </div>
     )
