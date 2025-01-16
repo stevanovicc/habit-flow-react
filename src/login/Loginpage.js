@@ -25,7 +25,7 @@ const LoginPage = () => {
 
   return (
     <div className='login-page'>
-    {/*<Header/>*/}
+    <Header/>
     <div className='login-container'>
     <h1 className='login-title'>Welcome to HabitFlow!</h1>
     <p className='login-subtitle'>Log in to your account</p>

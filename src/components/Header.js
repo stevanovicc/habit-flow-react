@@ -6,9 +6,12 @@ const Header = () => {
     return(
         <header>
         <div>
-            <p>Header {location.pathname.includes("home") ? "Home": location.pathname.includes("register") ? "Register": "Login"}</p>
+            <p>HabitFlow</p>
         </div>
         </header>
     );
 }
 export default Header;
+
+
+/*{location.pathname.includes("home") ? "Home": location.pathname.includes("register") ? "Register": "Login"}*/
