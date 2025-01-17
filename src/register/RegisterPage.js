@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Link,useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import "./RegisterPage.css";
 import { createUserWithEmailAndPassword } from 'firebase/auth';
 import { auth, db } from '../firebase/firebase';
@@ -41,48 +41,53 @@ const RegisterPage = () => {
     <div className='register-page'>
       <Header/>
       <div className='register-container'>
-        <h1 className='register-h1'>Register</h1>
-        <form onSubmit={handleSubmit} className='register-form'>
+        <h1 className='register-h1'>Create your account</h1>
+        <form className='register-form'>
         <div className='register-div'>
-        <label className='register-label'>First Name:</label>
+        <label className='register-label'>First Name</label>
         <input 
          type="text" 
+         placeholder='Enter your first name'
          value={fname} 
          onChange ={(e) => setFname(e.target.value)}
          className='register-input'
         />
         </div>
         <div className='register-div'>
-        <label className='register-label'>Last Name:</label>
+        <label className='register-label'>Last Name</label>
         <input
           type="text"
           value={lname}
+          placeholder='Enter your last name'
           onChange={(e) => setLname(e.target.value)}
           className='register-input'
         />
       </div>
       <div className='register-div'>
-        <label className='register-label'>Email:</label>
+        <label htmlFor='email' className='register-label'>Email</label>
         <input
+          id='email'
           type="email"
+          placeholder='Enter your email'
           value={email}
           onChange={(e) => setEmail(e.target.value)}
           className='register-input'
         />
       </div>
       <div className='register-div'>
-        <label className='register-label'>Password:</label>
+        <label htmlFor='password' className='register-label'>Password</label>
         <input
+          id='password'
           type="password"
+          placeholder='Enter your password'
           value={password}
           onChange={(e) => setPassword(e.target.value)}
           className='register-input'
         />
       </div>
-      <button type="submit" className='register-button'>Register</button>
-      {erorMessage && <p className="error-message">{erorMessage}</p>}
     </form>
-    <Link to="/" className='register-link'>Already have an account? Login Here!</Link>
+    <button type="submit" onClick={handleSubmit} className='register-button'>Sign Up</button>
+    {erorMessage && <p className="error-message">{erorMessage}</p>}
     </div>
     </div>
   );

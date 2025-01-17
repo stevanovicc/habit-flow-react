@@ -42,6 +42,6 @@ header {
     margin-right: 20px;
 }
 
-.button:hover {
+.header-button:hover {
     background-color: #0056b3;
 }
