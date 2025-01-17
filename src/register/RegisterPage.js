@@ -38,10 +38,11 @@ const RegisterPage = () => {
   };
 
   return (
-    <div className='register-container'>
+    <div className='register-page'>
       <Header/>
+      <div className='register-container'>
         <h1 className='register-h1'>Register</h1>
-    <form onSubmit={handleSubmit} className='register-form'>
+        <form onSubmit={handleSubmit} className='register-form'>
         <div className='register-div'>
         <label className='register-label'>First Name:</label>
         <input 
@@ -82,6 +83,7 @@ const RegisterPage = () => {
       {erorMessage && <p className="error-message">{erorMessage}</p>}
     </form>
     <Link to="/" className='register-link'>Already have an account? Login Here!</Link>
+    </div>
     </div>
   );
 };

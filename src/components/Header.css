@@ -1,0 +1,47 @@
+header {
+    border-bottom: 1px solid #ccc;
+    padding: 10px 21.5px;
+    background-color: #fff;
+}
+
+.header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.logo-container {
+    display: flex;
+    align-items: center;
+}
+
+.header svg {
+    height: 16px;
+    width: 16px;
+    margin-right: 16px;
+    margin-left: 18px;
+}
+
+.header h2 {
+    margin: 0;
+    font-size: 23px;
+    font-weight: bold;
+    color: #333;
+}
+
+.header-button {
+    background-color: #1C8CD6;
+    color: white;
+    border: none;
+    border-radius: 12px;
+    padding: 8px 16px;
+    cursor: pointer;
+    font-size: 14px;
+    width: 100px;
+    height: 40px;
+    margin-right: 20px;
+}
+
+.button:hover {
+    background-color: #0056b3;
+}

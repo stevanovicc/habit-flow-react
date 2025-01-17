@@ -1,8 +1,7 @@
 import React from 'react';
 import {useEffect,useState} from 'react';
-import { getAuth,onAuthStateChanged,signOut } from 'firebase/auth';
+import { getAuth,onAuthStateChanged } from 'firebase/auth';
 import { getFirestore,doc,getDoc,collection, getDocs, updateDoc } from 'firebase/firestore';
-import { useNavigate} from 'react-router-dom';
 import "./HomePage.css";
 import "./HabitForm";
 import HabitForm from './HabitForm';
@@ -59,8 +58,6 @@ const HomePage = () => {
     const [showDueTodayMessage, setShowDueTodayMessage] = useState(false);
     const [successMessage, setSuccessMessage] = useState("");
     const [errorMessage, setErrorMessage] = useState("");
-
-    const navigate = useNavigate();
 
 
     const handleToggleCompletition = async (habitId, date) => {
@@ -131,17 +128,6 @@ const HomePage = () => {
         } catch(error){
             console.error("Error toggling completion", error);
         }
-    };
-
-    const handleLogout = () => {
-        signOut(auth)
-        .then(() => {
-            alert("You have been logged out successfully!");
-            navigate("/");
-        })
-        .catch((error) => {
-            console.error("Logout failed.", error);
-        });
     };
 
     const handleAddHabitClick = () => {
@@ -239,9 +225,9 @@ const HomePage = () => {
         return unsubscribe;
     }, [auth,db, weekOffset, habits]);
     return (
+    <div className='home-page'>
+    <Header/>
     <div className='home-container'>
-        <Header/>
-        <button className='logout-button' onClick={handleLogout}>Logout</button>
         <h1>Welcome to HabitFlow, {userName}!</h1>
         {!showHabitform &&(
         <button onClick={handleAddHabitClick} className='habit-button'>Add Habit</button>
@@ -258,6 +244,7 @@ const HomePage = () => {
         {showHabitform &&(
             <HabitForm handleCancel={handleCancel} setSuccessMessage={setSuccessMessage} setErrorMessage={setErrorMessage}/>
         )}
+    </div>
     </div>
     );
 };
