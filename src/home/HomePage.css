@@ -9,13 +9,16 @@
 }
 
 .habit-button {
-    background-color: #2563EB;
+    position: absolute;
+    top: 120px;
+    right: 30px;
+    background-color: #1C8CD6;
+    width: 240px;
+    height: 40px;
     color: #fff;
-    padding: 10px 15px;
     border: none;
-    border-radius: 4px;
+    border-radius: 12px;
     cursor: pointer;
-    width: 15%;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -25,51 +28,81 @@
     background-color: #1E40AF;
 }
 
+.overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.5);
+    z-index: 999;
+}
+
 .habit-form {
-    border: 1px solid #ddd;
-    padding: 20px;
-    margin-top: 15px;
-    background-color: #ffffff;
-    border-radius: 8px;
-    box-shadow: 0 2px 5px rgba(0, 0, 0, 1);
-    max-width: 400px;
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background-color: white;
+    padding: 20px 30px;
+    width: 400px;
+    height: 500px;
+    max-width: 90%;
+    border-radius: 16px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+    z-index: 1000;
+    text-align: center;
 }
 
 .habit-h2 {
-    font-size: 1.5rem;
-    margin-bottom: 10px;
+    margin: 0 0 15px;
+    font-size: 32px;
+    font-weight: bold;
+    color: #121417;
+    margin-bottom: 50px;
 }
 
 .habit-label {
     display: block;
-    font-weight: bold;
-    margin-top: 10px;
+    margin-bottom: 10px;
+    text-align: left;
+    color: #121417;
+    font-size: 16px;
 }
 
-.habit-input.habit-select {
-    width: 100%;
-    padding: 8px;
-    margin-top: 5px;
-    border: 1p solid #ccc;
-    border-radius: 5px;
-    font-size: 1rem;
-    box-sizing: border-box;
+.habit-input,
+.habit-select {
+    margin-top: 10px;
+    width: 415px;
+    height: 56px;
+    margin-bottom: 12px;
+    border: 1px solid #ccc;
+    border-radius: 12px;
+    font-size: 16px;
 }
 
 .habit-button-form {
-    padding: 10px 15px;
-    margin-right: 10px;
-    background-color: #2563EB;
-    color: #fff;
+    padding: 10px 20px;
+    font-size: 1rem;
+    font-weight: bold;
+    color: white;
+    background-color: #007bff;
     border: none;
     border-radius: 5px;
     cursor: pointer;
-    font-size: 1rem;
-    transition: background-color 0.3 ease;
+    margin-right: 10px;
+    transition: background-color 0.3s ease;
 }
 
-.habit-button-form:hover {
-    background-color: #1E40AF;
+.habit-button-form {
+    background-color: #fff;
+    border: 1px solid #1c8cd6;
+    color: #1c8cd6;
+}
+
+.habit-button-form:last-child {
+    background-color: #1C8CD6;
+    color: white;
 }
 
 .success-message {
@@ -108,48 +141,70 @@
     background-color: #e60000;
 }
 
-.week-view {
-    display: flex;
-    justify-content: space-around;
-    margin-top: 20px;
-}
-
-.week-day {
-    padding: 14px;
-    background: #d9d9d9;
-    border-radius: 8px;
-    text-align: center;
-    flex: 1;
-    margin: 0 5px;
-    font-size: 16px;
-    font-weight: bold;
-    color: #111;
+.calendar-container {
     display: flex;
     flex-direction: column;
     align-items: center;
-    box-shadow: 0 3px 5px rgba(0, 0, 0, 0.15);
+    padding: 20px;
+    font-family: "Arial", sans-serif;
 }
 
-.day {
-    font-size: 18px;
+.header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+    margin-bottom: 20px;
 }
 
-.date {
-    font-size: 16px;
-    margin-top: 6px;
+.title {
+    font-size: 1.5em;
+    font-weight: bold;
 }
 
 .arrow-button {
-    background: none;
+    background-color: white;
+    color: black;
     border: none;
-    font-size: 24px;
+    width: 20px;
+    height: 20px;
     cursor: pointer;
-    padding: 10px;
-    color: #333;
 }
 
 .arrow-button:hover {
-    color: #000;
+    background-color: #0056b3;
+}
+
+.calendar-week {
+    display: flex;
+    justify-content: space-around;
+    width: 100%;
+}
+
+.calendar-day {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 10px;
+    border: 1px solid #e0e0e0;
+    border-radius: 10px;
+    background-color: #fff;
+    width: 120px;
+}
+
+.day-name {
+    font-weight: bold;
+    margin-bottom: 10px;
+}
+
+.streak-message {
+    margin-top: 20px;
+    font-size: 1.2em;
+    text-align: center;
+}
+
+.streak-message div {
+    margin: 5px 0;
 }
 
 .habit-list {
@@ -205,7 +260,6 @@
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
     text-align: center;
     max-width: 300px;
-    z-index: 1000;
 }
 
 .due-today-message h2 {
@@ -229,27 +283,12 @@
     color: #333;
 }
 
-.close-message-button {
-    margin-top: 10px;
-    padding: 5px 10px;
-    background-color: #007bff;
-    color: white;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
-    font-size: 14px;
+.plus {
+    padding-right: 10px;
 }
 
-.close-message-button:hover {
-    background-color: #d32f2f;
-}
-
-.streak-message {
+.home-h1 {
     position: absolute;
-    bottom: 10px;
-    left: 50%;
-    transform: translateX(-50%);
-    text-align: center;
-    font-size: 1.2rem;
-    color: #333;
+    top: 100px;
+    left: 30px;
 }

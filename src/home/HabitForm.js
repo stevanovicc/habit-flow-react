@@ -37,33 +37,39 @@ const HabitForm = (props) => {
     
         };
 
+        if(!props.isOpen) return null;
+
 
     return(
-        <div className="habit-form">
-                <h2 className='habit-h2'>Add a New Habit</h2>
+        <div className="habit-div" onClick={props.handleCancel}>
+        <div className="habit-form"
+        onClick={(e) =>e.stopPropagation()}>
+                <h2 className='habit-h2'>Add New Habit</h2>
                 <label className='habit-label'>
-                    Habit Name:
+                    Habit Name
                     <input
                     type='text'
                     value={habitName}
+                    placeholder="Enter habit name"
                     onChange={(e) => setHabitName(e.target.value)}
                     className='habit-input'
                     />
                 </label>
                 <br/>
                 <label className='habit-label'>
-                    Description:
+                    Habit Description
                     <input
                     type='text'
                     value={habitDescription}
+                    placeholder="Enter habit description"
                     onChange={(e) => setHabitDescription(e.target.value)}
                     className='habit-input'
                     />
                 </label>
                 <br/>
                 <label className='habit-label'>
-                    Frequency
                     <select
+                    placeholder="Select habit frequency"
                     value={habitFrequency}
                     onChange={(e) => setHabitFrequency(e.target.value)}
                     className='habit-select'
@@ -74,8 +80,9 @@ const HabitForm = (props) => {
                     </select>
                 </label>
                 <br/>
-                <button onClick={handleSubmit} className='habit-button-form'>Save</button>
                 <button onClick={props.handleCancel} className='habit-button-form'>Cancel</button>
+                <button onClick={handleSubmit} className='habit-button-form'>Add</button>
+            </div>
             </div>
     );
     

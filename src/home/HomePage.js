@@ -8,6 +8,7 @@ import HabitForm from './HabitForm';
 import DueToday from "./DueToday";
 import Calendar from "./Calendar";
 import Header from "../components/Header";
+import { ReactComponent as Plus} from "../components/assets/plus.svg";
 
 
 
@@ -49,7 +50,7 @@ const HomePage = () => {
     const [userName,setUserName] = useState('');
     const auth = getAuth();
     const db = getFirestore();
-    const [showHabitform, setShowHabitForm] = useState(false);
+    const [showHabitform] = useState(false);
     const [weekOffset, setWeekOffset] = useState(0);
     const [week, setWeek] = useState(getCurrentWeek(weekOffset));
     const [habits, setHabits] = useState([]);
@@ -58,6 +59,7 @@ const HomePage = () => {
     const [showDueTodayMessage, setShowDueTodayMessage] = useState(false);
     const [successMessage, setSuccessMessage] = useState("");
     const [errorMessage, setErrorMessage] = useState("");
+    const [isOpen, setIsOpen] = useState(false);
 
 
     const handleToggleCompletition = async (habitId, date) => {
@@ -129,15 +131,6 @@ const HomePage = () => {
             console.error("Error toggling completion", error);
         }
     };
-
-    const handleAddHabitClick = () => {
-        setShowHabitForm(true);
-    }
-
-
-    const handleCancel = () => {
-        setShowHabitForm(false);
-    }
 
     const handleNextWeek = () => {
         setWeekOffset(prevOffset => {
@@ -211,7 +204,7 @@ const HomePage = () => {
                 const userDoc= await getDoc(doc(db,"users", user.uid));
                 if(userDoc.exists()){
                     const data = userDoc.data();
-                    setUserName(`${data.firstName} ${data.lastName}`);
+                    setUserName(`${data.firstName}`);
                 }
             } catch(error){
                 console.error("Error fetching user data", error);
@@ -228,21 +221,26 @@ const HomePage = () => {
     <div className='home-page'>
     <Header/>
     <div className='home-container'>
-        <h1>Welcome to HabitFlow, {userName}!</h1>
+        <h1 className='home-h1'>Hello, {userName}</h1>
         {!showHabitform &&(
-        <button onClick={handleAddHabitClick} className='habit-button'>Add Habit</button>
+        <button onClick={() =>{console.log("Button Clicked!");
+            setIsOpen(true);
+        }} className='habit-button'><Plus className='plus'/>Add a new habit</button>
         )}
         {congratsMessage &&( <div className='congrats-message'>{congratsMessage}</div>)}
         {successMessage && <div className='success-message'>{successMessage}</div>}
         {errorMessage && <div className='error-message'>{errorMessage}</div>}
 
         <Calendar handlePreviousWeek={handlePreviousWeek} handleNextWeek={handleNextWeek} week={week} habits={habits} handleToggleCompletition={handleToggleCompletition}></Calendar>
-        {showDueTodayMessage && (
+       {/* {showDueTodayMessage && (
             <DueToday setShowDueTodayMessage={setShowDueTodayMessage} habitsDueToday={habitsDueToday}/>
-        )}
+        )} */}
 
-        {showHabitform &&(
-            <HabitForm handleCancel={handleCancel} setSuccessMessage={setSuccessMessage} setErrorMessage={setErrorMessage}/>
+        {isOpen &&(
+            <>
+            <div className='overlay' onClick={() => setIsOpen(false)}></div>
+            <HabitForm isOpen={isOpen} handleCancel={() => setIsOpen(false)} setSuccessMessage={setSuccessMessage} setErrorMessage={setErrorMessage}/>
+            </>
         )}
     </div>
     </div>
