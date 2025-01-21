@@ -44,7 +44,7 @@ const HabitForm = (props) => {
         <div className="habit-div" onClick={props.handleCancel}>
         <div className="habit-form"
         onClick={(e) =>e.stopPropagation()}>
-                <h2 className='habit-h2'>Add New Habit</h2>
+                <h2 className='habit-form-h2'>Add New Habit</h2>
                 <label className='habit-label'>
                     Habit Name
                     <input
@@ -68,8 +68,8 @@ const HabitForm = (props) => {
                 </label>
                 <br/>
                 <label className='habit-label'>
+                    Habit Frequency
                     <select
-                    placeholder="Select habit frequency"
                     value={habitFrequency}
                     onChange={(e) => setHabitFrequency(e.target.value)}
                     className='habit-select'
@@ -80,8 +80,10 @@ const HabitForm = (props) => {
                     </select>
                 </label>
                 <br/>
+                <div className="button-group">
                 <button onClick={props.handleCancel} className='habit-button-form'>Cancel</button>
                 <button onClick={handleSubmit} className='habit-button-form'>Add</button>
+                </div>
             </div>
             </div>
     );

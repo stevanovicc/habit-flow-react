@@ -38,24 +38,28 @@
     z-index: 999;
 }
 
-.habit-form {
+.habit-div {
     position: fixed;
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
-    background-color: white;
-    padding: 20px 30px;
-    width: 400px;
-    height: 500px;
-    max-width: 90%;
-    border-radius: 16px;
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
     z-index: 1000;
-    text-align: center;
+    background-color: #fff;
+    padding: 20px 30px;
+    border-radius: 20px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
+    width: 90%;
+    max-width: 400px;
 }
 
-.habit-h2 {
-    margin: 0 0 15px;
+.habit-form {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+.habit-form-h2 {
+    text-align: center;
     font-size: 32px;
     font-weight: bold;
     color: #121417;
@@ -63,7 +67,6 @@
 }
 
 .habit-label {
-    display: block;
     margin-bottom: 10px;
     text-align: left;
     color: #121417;
@@ -72,26 +75,40 @@
 
 .habit-input,
 .habit-select {
-    margin-top: 10px;
-    width: 415px;
+    padding-top: 15px;
+    padding-left: 15px;
+    padding-bottom: 15px;
+    padding-right: 200px;
+    width: 400px;
     height: 56px;
+    margin-top: 10px;
     margin-bottom: 12px;
     border: 1px solid #ccc;
     border-radius: 12px;
     font-size: 16px;
+    box-sizing: border-box;
+}
+
+.button-group {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 20px;
 }
 
 .habit-button-form {
     padding: 10px 20px;
-    font-size: 1rem;
+    width: 400px;
+    height: 50px;
     font-weight: bold;
     color: white;
     background-color: #007bff;
     border: none;
-    border-radius: 5px;
+    border-radius: 12px;
     cursor: pointer;
     margin-right: 10px;
     transition: background-color 0.3s ease;
+    font-size: 16px;
+    text-align: center;
 }
 
 .habit-button-form {
@@ -103,6 +120,10 @@
 .habit-button-form:last-child {
     background-color: #1C8CD6;
     color: white;
+}
+
+.habit-button-form:hover {
+    opacity: 0.8;
 }
 
 .success-message {
@@ -142,65 +163,94 @@
 }
 
 .calendar-container {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
     padding: 20px;
     font-family: "Arial", sans-serif;
+    width: 100%;
+    margin-bottom: 400px;
 }
 
-.header {
+.header-calendar {
     display: flex;
-    justify-content: space-between;
-    align-items: center;
-    width: 100%;
-    margin-bottom: 20px;
+    padding-left: 25px;
+    align-items: flex-start;
+    margin-bottom: 0;
 }
 
 .title {
-    font-size: 1.5em;
+    font-size: 18px;
     font-weight: bold;
+    color: #121417;
+    padding-left: 30px;
+    padding-right: 30px;
 }
 
 .arrow-button {
-    background-color: white;
-    color: black;
+    background-color: transparent;
     border: none;
-    width: 20px;
-    height: 20px;
     cursor: pointer;
+    font-size: 18px;
 }
 
 .arrow-button:hover {
-    background-color: #0056b3;
+    opacity: 0.6;
 }
 
 .calendar-week {
     display: flex;
     justify-content: space-around;
+    align-items: flex-start;
     width: 100%;
+    overflow-x: auto;
+    padding-left: 5px;
+    gap: 15px;
 }
 
 .calendar-day {
     display: flex;
     flex-direction: column;
     align-items: center;
+    text-align: center;
     padding: 10px;
-    border: 1px solid #e0e0e0;
-    border-radius: 10px;
-    background-color: #fff;
-    width: 120px;
+    margin: 0 5px;
+    min-width: 100px;
 }
 
 .day-name {
+    font-size: 0.9em;
     font-weight: bold;
-    margin-bottom: 10px;
+    margin-bottom: 5px;
+}
+
+.day-dot {
+    align-items: flex-start;
+    width: 10px;
+    height: 10px;
+    background-color: black;
+    border-radius: 50%;
+    margin: 5px 0;
+}
+
+.habit-list-calendar {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    margin-top: 10px;
+    gap: 5px;
+}
+
+.habit {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.8em;
+    margin: 5px 0;
 }
 
 .streak-message {
     margin-top: 20px;
-    font-size: 1.2em;
+    font-size: 1.1em;
     text-align: center;
+    color: #555;
 }
 
 .streak-message div {

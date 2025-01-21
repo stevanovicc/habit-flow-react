@@ -11,7 +11,7 @@ const Calendar = (props) => {
 
     return(
         <div className='calendar-container'>
-        <div className='header'>
+        <div className='header-calendar'>
         <button onClick={props.handlePreviousWeek} className='arrow-button'>{"<"}</button>
         <div className='title'>Week of {formattedStartDate}</div>
         <button onClick={props.handleNextWeek} className='arrow-button'>{">"}</button>
@@ -40,12 +40,15 @@ const Calendar = (props) => {
             });
             return(
                 <div key={index} className='calendar-day'>
-                    <div className='day-name'>
-                       <div>{weekDay.name}</div>
-                        <div>{weekDay.date}</div>
-                    </div>
+                            <div className="day-name">
+                                <div>{weekDay.name}</div>
+                                <div className="day-dot"></div>
+                                <div>{weekDay.date}</div>
+                            </div>
                     {matchingHabits.length > 0 && (
+                        <div className='habit-list-calendar'>
                         <HabitList handleToggleCompletition={props.handleToggleCompletition} matchingHabits={matchingHabits} weekDay={weekDay}/>
+                        </div>
                     )}
                     </div>
             );
