@@ -41,9 +41,11 @@ const Calendar = (props) => {
             return(
                 <div key={index} className='calendar-day'>
                             <div className="day-name">
-                                <div>{weekDay.name}</div>
-                                <div className="day-dot"></div>
-                                <div>{weekDay.date}</div>
+                                <div className='day-header'>
+                                    <div className="day-dot"></div>
+                                    <div className='day-title'>{weekDay.name}</div>
+                                </div>
+                                <div className='day-date'>{weekDay.date}</div>
                             </div>
                     {matchingHabits.length > 0 && (
                         <div className='habit-list-calendar'>

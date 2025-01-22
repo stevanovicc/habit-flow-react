@@ -144,32 +144,18 @@
     border-radius: 5px;
 }
 
-.logout-button {
-    position: absolute;
-    top: 10px;
-    left: 10px;
-    padding: 8px 16px;
-    background-color: #2563EB;
-    color: white;
-    border: none;
-    border-radius: 4px;
-    cursor: pointer;
-    font-size: 14px;
-    transition: background-color 0.3s;
-}
-
-.logout-button:hover {
-    background-color: #e60000;
-}
-
 .calendar-container {
-    padding: 20px;
     font-family: "Arial", sans-serif;
-    width: 100%;
-    margin-bottom: 400px;
+    max-width: 100%;
+    max-height: 100%;
+    overflow: hidden;
+    margin-bottom: 300px;
+    padding: 0;
+    box-sizing: border-box;
 }
 
 .header-calendar {
+    margin-top: 100px;
     display: flex;
     padding-left: 25px;
     align-items: flex-start;
@@ -200,9 +186,7 @@
     justify-content: space-around;
     align-items: flex-start;
     width: 100%;
-    overflow-x: auto;
-    padding-left: 5px;
-    gap: 15px;
+    padding-left: 15px;
 }
 
 .calendar-day {
@@ -211,14 +195,27 @@
     align-items: center;
     text-align: center;
     padding: 10px;
-    margin: 0 5px;
     min-width: 100px;
 }
 
 .day-name {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    text-align: left;
     font-size: 0.9em;
     font-weight: bold;
-    margin-bottom: 5px;
+}
+
+.day-header {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.day-title {
+    font-size: 1em;
+    font-weight: bold;
 }
 
 .day-dot {
@@ -227,7 +224,14 @@
     height: 10px;
     background-color: black;
     border-radius: 50%;
-    margin: 5px 0;
+    margin-left: 0;
+    margin-right: 40px;
+}
+
+.day-date {
+    margin-left: 18px;
+    font-size: 0.9em;
+    color: #333;
 }
 
 .habit-list-calendar {
@@ -258,9 +262,51 @@
 }
 
 .habit-list {
-    padding: 0;
-    margin: 0;
+    margin-right: 100px;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    font-size: 12px;
+    color: #121417;
+    padding: 5px 10px;
+    border-radius: 5px;
+    cursor: pointer;
     list-style-type: none;
+}
+
+.habit-list-div {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+    gap: 15px;
+}
+
+.habit-label {
+    text-align: center;
+    margin: 0;
+}
+
+.habit-checkbox {
+    margin: 0;
+    appearance: none;
+    width: 16px;
+    height: 16px;
+    border: 2px solid #1C8CD6;
+    border-radius: 4px;
+    cursor: pointer;
+    outline: none;
+}
+
+.habit-checkbox:checked {
+    background-color: #1C8CD6;
+    border-color: #1C8CD6;
+}
+
+.habit-checkbox:checked::before {
+    content: '✓';
+    color: white;
+    font-size: 10px;
 }
 
 .habit-list li {

@@ -9,14 +9,10 @@ const HabitList = (props) => {
 
             return(
                 <li key={idx}>
-                    <label>
-                        <input
-                            type='checkbox'
-                            checked={isCompleted}
-                            onChange={() => props.handleToggleCompletition(habit.id, props.weekDay.rawDate)}
-                        />
-                        {habit.name}
-                    </label>
+                    <div className="habit-list-div">
+                    <input className="habit-checkbox" type='checkbox' checked={isCompleted} onChange={() => props.handleToggleCompletition(habit.id, props.weekDay.rawDate)}/>
+                    <label className="habit-label">{habit.name}</label>
+                    </div>
                 </li>
             );
         })}
