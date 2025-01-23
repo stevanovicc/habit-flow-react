@@ -61,7 +61,6 @@ const HomePage = () => {
     const [errorMessage, setErrorMessage] = useState("");
     const [isOpen, setIsOpen] = useState(false);
 
-
     const handleToggleCompletition = async (habitId, date) => {
         try{
             const habitRef = doc(db,"habits", habitId);
@@ -87,15 +86,31 @@ const HomePage = () => {
                     let currentStreak = 0;
                     let longestStreak = habitData.longestStreak || 0;
 
-                    for (let i = dates.length - 1; i >= 0; i--){
-                        const currentDate = new Date(dates[i]);
-                        const previousDate = new Date(dates[i - 1]);
+                    const sortedDates = dates.sort((a,b) => new Date(a) - new Date(b));
+
+                    const todayString = new Date().toISOString().split("T")[0];
+
+                    let streakIncludesToday = false;
+                    for (let i = sortedDates.length - 1; i >= 0; i--){
+                        const currentDate = new Date(sortedDates[i]);
+                        const previousDate = new Date(sortedDates[i - 1]);
+
+                        if (sortedDates[i] === todayString){
+                            streakIncludesToday = true;
+                        }
 
                         if (i === 0 || currentDate - previousDate > 24 * 60 * 60 * 1000){
+                            currentStreak++
                             break;
                         }
+
                         currentStreak++;
                     }
+
+                    if(!streakIncludesToday){
+                        currentStreak = 0;
+                    }
+
                     longestStreak = Math.max(longestStreak, currentStreak);
                     return {currentStreak, longestStreak};
                 };
@@ -116,21 +131,50 @@ const HomePage = () => {
                             )
                         );
 
-                if (!isCurrentlyCompleted) {
-                    if (currentStreak > 1) {
-                        setCongratsMessage(`🔥 You are on a ${currentStreak}-day streak! Keep it up!`);
-                    } else {
-                        setCongratsMessage("🎉 Congratulations on completing a habit! 🎉");
-                    }
-                    setTimeout(() => setCongratsMessage(""), 3000);
+                if (currentStreak === 3){
+                    setCongratsMessage("You've hit a 3 day-streak! Keep going!");
+                } else if (currentStreak > 3 ){
+                    setCongratsMessage(`You are on a ${currentStreak}-day streak!`);
+                } else if(!isCurrentlyCompleted){
+                    setCongratsMessage("Congratulations on completing a habit!");
                 }
-            }else {
-                console.error("Habit document doesn't exist");
+                setTimeout(() => setCongratsMessage(""), 3000);
+            } else {
+                console.error("Habit document doesn't exist.");
             }
         } catch(error){
             console.error("Error toggling completion", error);
         }
     };
+
+    const [userStreak, setUserStreak] = useState({
+        currentStreak: 0,
+        longestStreak: 0,
+    });
+
+    useEffect(() => {
+        const calculateUserStreak = () => {
+            let totalCurrentStreak = 0;
+            let totalLongestStreak = 0;
+
+            habits.forEach((habit) => {
+                if(habit.currentStreak) {
+                    totalCurrentStreak = Math.max(totalCurrentStreak, habit.currentStreak);
+                }
+                if (habit.longestStreak) {
+                    totalLongestStreak = Math.max(totalLongestStreak, habit.longestStreak);
+                }
+            });
+
+            setUserStreak({
+                currentStreak: totalCurrentStreak,
+                longestStreak: totalLongestStreak,
+            });
+        };
+        if (habits.length > 0) {
+            calculateUserStreak();
+        }
+    }, [habits]);
 
     const handleNextWeek = () => {
         setWeekOffset(prevOffset => {
@@ -231,10 +275,19 @@ const HomePage = () => {
         {successMessage && <div className='success-message'>{successMessage}</div>}
         {errorMessage && <div className='error-message'>{errorMessage}</div>}
 
+        <div className='streak-container'>
+            <p className='streak-message'>
+                🔥 Current Streak: {userStreak.currentStreak} days
+            </p>
+            <p className='streak-message'>
+                🏆 Longest Streak: {userStreak.longestStreak} days
+            </p>
+        </div>
+
         <Calendar handlePreviousWeek={handlePreviousWeek} handleNextWeek={handleNextWeek} week={week} habits={habits} handleToggleCompletition={handleToggleCompletition}></Calendar>
-       {/* {showDueTodayMessage && (
+        {showDueTodayMessage && (
             <DueToday setShowDueTodayMessage={setShowDueTodayMessage} habitsDueToday={habitsDueToday}/>
-        )} */}
+        )}
 
         {isOpen &&(
             <>
