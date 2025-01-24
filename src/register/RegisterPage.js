@@ -85,8 +85,8 @@ const RegisterPage = () => {
           className='register-input'
         />
       </div>
+      <button type="submit" onClick={handleSubmit} className='register-button'>Sign Up</button>
     </form>
-    <button type="submit" onClick={handleSubmit} className='register-button'>Sign Up</button>
     {erorMessage && <p className="error-message">{erorMessage}</p>}
     </div>
     </div>

@@ -365,8 +365,8 @@ body {
     left: 42%;
     margin-top: 20px;
     padding: 15px;
-    background-color: #f0f8ff;
-    border: 1px solid #007bff;
+    background-color: #fff;
+    border: 1px solid #121417;
     border-radius: 10px;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
     text-align: center;
@@ -375,7 +375,7 @@ body {
 
 .due-today-message h2 {
     margin-bottom: 10px;
-    color: #007bff;
+    color: #121417;
     text-align: center;
     font-size: 18px;
     font-weight: bold;

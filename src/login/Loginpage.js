@@ -52,8 +52,8 @@ const LoginPage = () => {
           className='login-input'
         />
       </div>
+      <button type="submit" className='login-button' onClick={handleSubmit}>Sign in</button>
     </form>
-    <button type="submit" className='login-button' onClick={handleSubmit}>Sign in</button>
     {errorMessage && <p className="error-message">{errorMessage}</p>}
     </div>
     </div>

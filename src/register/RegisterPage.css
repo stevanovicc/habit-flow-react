@@ -10,6 +10,8 @@ body {
     height: 100%;
     width: 100%;
     background-color: #fff;
+    margin: 0;
+    padding: 0;
 }
 
 .register-container {
@@ -19,9 +21,12 @@ body {
     justify-content: center;
     width: 100%;
     height: 100%;
+    padding: 20px;
     background-color: #fff;
     font-family: Arial, sans-serif;
     text-align: center;
+    gap: 15px;
+    box-sizing: border-box;
 }
 
 .register-h1 {
@@ -35,10 +40,17 @@ body {
 .register-form {
     display: flex;
     flex-direction: column;
+    gap: 24px;
+    text-align: center;
+    justify-content: center;
+    width: 100%;
+    max-width: 400px;
 }
 
 .register-div {
-    margin-bottom: 15px;
+    width: 100%;
+    max-width: 400px;
+    margin: 0 auto;
 }
 
 .register-label {
@@ -50,13 +62,15 @@ body {
 }
 
 .register-input {
-    width: 448px;
-    height: 25px;
+    width: 100%;
+    max-width: 400px;
+    height: 20px;
     border: 1px solid #ccc;
     border-radius: 12px;
     font-size: 16px;
     color: #637887;
-    padding: 15px;
+    padding: 20px;
+    box-sizing: border-box;
 }
 
 .register-input:focus {
@@ -65,16 +79,21 @@ body {
 }
 
 .register-button {
-    margin-top: 12px;
-    width: 520px;
+    width: 100%;
+    max-width: 400px;
     height: 40px;
-    background-color: #1C8CD6;
-    color: white;
+    padding: 10px;
+    font-size: 16px;
+    font-weight: bold;
     border: none;
     border-radius: 12px;
-    font-size: 16px;
+    background-color: #1C8CD6;
+    color: #ffffff;
     cursor: pointer;
-    transition: background-color 0.3s;
+    margin-top: 20px;
+    transition: background-color 0.3s ease;
+    box-sizing: border-box;
+    display: block;
 }
 
 .register-button:hover {
