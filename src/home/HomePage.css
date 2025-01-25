@@ -19,10 +19,11 @@ body {
 
 .habit-button {
     position: absolute;
-    top: 120px;
-    right: 30px;
+    top: 10%;
+    right: 2%;
     background-color: #1C8CD6;
-    width: 240px;
+    width: 100%;
+    max-width: 200px;
     height: 40px;
     color: #fff;
     border: none;
@@ -75,7 +76,7 @@ body {
     margin-bottom: 50px;
 }
 
-.habit-label {
+.habit-form-label {
     margin-bottom: 10px;
     text-align: left;
     color: #121417;
@@ -361,8 +362,8 @@ body {
 
 .due-today-message {
     position: fixed;
-    top: 10%;
-    left: 42%;
+    top: 60%;
+    left: 2%;
     margin-top: 20px;
     padding: 15px;
     background-color: #fff;
@@ -400,8 +401,8 @@ body {
 
 .home-h1 {
     position: absolute;
-    top: 100px;
-    left: 30px;
+    top: 10%;
+    left: 2%;
 }
 
 .streak-container {

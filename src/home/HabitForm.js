@@ -10,7 +10,6 @@ const HabitForm = (props) => {
     const [habitFrequency, setHabitFrequency] = useState("everyday");
 
 
-
     const handleSubmit = async () => {
             try{
                 const habitData = {
@@ -19,6 +18,7 @@ const HabitForm = (props) => {
                     frequency: habitFrequency,
                     createdAt: serverTimestamp(),
                     completedDates: [],
+                    createdBy: props.user.uid,
                 };
     
                 await addDoc(collection(db,"habits"), habitData);
@@ -45,7 +45,7 @@ const HabitForm = (props) => {
         <div className="habit-form"
         onClick={(e) =>e.stopPropagation()}>
                 <h2 className='habit-form-h2'>Add New Habit</h2>
-                <label className='habit-label'>
+                <label className='habit-form-label'>
                     Habit Name
                     <input
                     type='text'
@@ -56,7 +56,7 @@ const HabitForm = (props) => {
                     />
                 </label>
                 <br/>
-                <label className='habit-label'>
+                <label className='habit-form-label'>
                     Habit Description
                     <input
                     type='text'
@@ -67,7 +67,7 @@ const HabitForm = (props) => {
                     />
                 </label>
                 <br/>
-                <label className='habit-label'>
+                <label className='habit-form-label'>
                     Habit Frequency
                     <select
                     value={habitFrequency}

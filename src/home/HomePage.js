@@ -1,7 +1,7 @@
 import React from 'react';
 import {useEffect,useState} from 'react';
 import { getAuth,onAuthStateChanged } from 'firebase/auth';
-import { getFirestore,doc,getDoc,collection, getDocs, updateDoc } from 'firebase/firestore';
+import { getFirestore,doc,getDoc,collection, getDocs, updateDoc, where, query } from 'firebase/firestore';
 import "./HomePage.css";
 import "./HabitForm";
 import HabitForm from './HabitForm';
@@ -60,6 +60,7 @@ const HomePage = () => {
     const [successMessage, setSuccessMessage] = useState("");
     const [errorMessage, setErrorMessage] = useState("");
     const [isOpen, setIsOpen] = useState(false);
+    const [user,setUser] = useState("");
 
     const handleToggleCompletition = async (habitId, date) => {
         try{
@@ -221,22 +222,25 @@ const HomePage = () => {
             setShowDueTodayMessage(true);
         }
 
-        const fetchHabits = async() => {
-            const habitCollection = await getDocs(collection(db, "habits"));
-            const habitList = habitCollection.docs.map((doc) => ({
-              id: doc.id,
+        const fetchHabits = async () => {
+            const habitsRef = collection(db, "habits");
+            const q = query(habitsRef, where("createdBy", "==", user.uid));
+          
+              const habitCollection = await getDocs(q);
+              const habitList = habitCollection.docs.map((doc) => ({
+                id: doc.id,
                 ...doc.data(),
                 createdAt: doc.data().createdAt ? doc.data().createdAt.toDate() : new Date(),
-                completedDates:doc.data().completedDates || [],
+                completedDates: doc.data().completedDates || [],
                 currentStreak: doc.data().currentStreak || 0,
                 longestStreak: doc.data().longestStreak || 0,
-        }));
-        setHabits(habitList);
-     };
+              }));
+              setHabits(habitList);
+          };
 
 
         const fetchData = async () => {
-            await fetchHabits();
+            await fetchHabits(user.uid);
         };
         fetchData();
 
@@ -256,11 +260,12 @@ const HomePage = () => {
         };
         const unsubscribe = onAuthStateChanged(auth, (user) =>{
             if (user){
+                setUser(user);
                 fetchUserData(user);
             }
         });
         return unsubscribe;
-    }, [auth,db, weekOffset, habits]);
+    }, [auth,db, weekOffset, habits,user]);
     return (
     <div className='home-page'>
     <Header/>
@@ -292,7 +297,7 @@ const HomePage = () => {
         {isOpen &&(
             <>
             <div className='overlay' onClick={() => setIsOpen(false)}></div>
-            <HabitForm isOpen={isOpen} handleCancel={() => setIsOpen(false)} setSuccessMessage={setSuccessMessage} setErrorMessage={setErrorMessage}/>
+            <HabitForm isOpen={isOpen} handleCancel={() => setIsOpen(false)} setSuccessMessage={setSuccessMessage} setErrorMessage={setErrorMessage} user={user}/>
             </>
         )}
     </div>
