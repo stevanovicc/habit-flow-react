@@ -9,6 +9,29 @@ const Calendar = (props) => {
         day: 'numeric'
     }).format(new Date(props.week[0]?.rawDate));
 
+const getMatchingHabits = (weekDay) => {
+    return props.habits.filter((habit) => {
+        const habitCreationDate = new Date(habit.createdAt);
+        const currentDate = new Date(weekDay.rawDate);
+
+        if (currentDate < habitCreationDate) {
+            return false;
+        }   
+
+        if (habit.frequency === "everyday"){
+            return true;
+        }else if (habit.frequency === "once-a-week"){
+            return habitCreationDate.getDay() === currentDate.getDay();
+        }else if (habit.frequency === "once-a-month"){
+            return (
+                habitCreationDate.getDate() === currentDate.getDate() &&
+                habitCreationDate.getMonth() === currentDate.getMonth()
+            );
+        }
+        return false;
+    });
+}
+
     return(
         <div className='calendar-container'>
         <div className='header-calendar'>
@@ -18,26 +41,7 @@ const Calendar = (props) => {
         </div>
         <div className='calendar-week'>
         {props.week.map((weekDay, index) =>  {
-            const matchingHabits = props.habits.filter((habit) => {
-                const habitCreationDate = new Date(habit.createdAt);
-                const currentDate = new Date(weekDay.rawDate);
-
-                if (currentDate < habitCreationDate) {
-                    return false;
-                }   
-
-                if (habit.frequency === "everyday"){
-                    return true;
-                }else if (habit.frequency === "once-a-week"){
-                    return habitCreationDate.getDay() === currentDate.getDay();
-                }else if (habit.frequency === "once-a-month"){
-                    return (
-                        habitCreationDate.getDate() === currentDate.getDate() &&
-                        habitCreationDate.getMonth() === currentDate.getMonth()
-                    );
-                }
-                return false;
-            });
+            const matchingHabits = getMatchingHabits(weekDay);
             return(
                 <div key={index} className='calendar-day'>
                             <div className="day-name">
