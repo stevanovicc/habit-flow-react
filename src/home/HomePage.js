@@ -223,6 +223,11 @@ const HomePage = () => {
         }
 
         const fetchHabits = async () => {
+            if (!user || !user.uid){
+                console.error("User not found.")
+                return;            
+            };
+
             const habitsRef = collection(db, "habits");
             const q = query(habitsRef, where("createdBy", "==", user.uid));
           
@@ -238,12 +243,6 @@ const HomePage = () => {
               setHabits(habitList);
           };
 
-
-        const fetchData = async () => {
-            await fetchHabits(user.uid);
-        };
-        fetchData();
-
         const newWeek = getCurrentWeek(weekOffset);
         setWeek(newWeek);
 
@@ -253,6 +252,7 @@ const HomePage = () => {
                 if(userDoc.exists()){
                     const data = userDoc.data();
                     setUserName(`${data.firstName}`);
+                    fetchHabits();
                 }
             } catch(error){
                 console.error("Error fetching user data", error);
@@ -270,12 +270,14 @@ const HomePage = () => {
     <div className='home-page'>
     <Header/>
     <div className='home-container'>
+        <div className='homepage-title'>
         <h1 className='home-h1'>Hello, {userName}</h1>
         {!showHabitform &&(
         <button onClick={() =>{console.log("Button Clicked!");
             setIsOpen(true);
         }} className='habit-button'><Plus className='plus'/>Add a new habit</button>
         )}
+        </div>
         {congratsMessage &&( <div className='congrats-message'>{congratsMessage}</div>)}
         {successMessage && <div className='success-message'>{successMessage}</div>}
         {errorMessage && <div className='error-message'>{errorMessage}</div>}
