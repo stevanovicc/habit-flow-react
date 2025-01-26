@@ -4,6 +4,7 @@ import "./HomePage.css";
 
 const Calendar = (props) => {
     const [isMobile,setIsMobile] = useState(false);
+    const [currentDayIndex,setCurrentDayIndex] = useState(0);
 
     const formattedStartDate = new Intl.DateTimeFormat('en-US', {
         month:'long',
@@ -33,6 +34,44 @@ const getMatchingHabits = (weekDay) => {
     });
 }
 
+const handleNextMobileDay = () => {
+    const newIndex = currentDayIndex + 1;
+    if(newIndex > 6){
+        props.handleNextWeek();
+        setCurrentDayIndex(0);
+    } else{
+        setCurrentDayIndex(newIndex);
+    }
+}
+const handlePreviousMobileDay = () =>{
+    const newIndex = currentDayIndex - 1;
+    if(newIndex < 0){
+        props.handlePreviousWeek();
+        setCurrentDayIndex(6);
+    } else{
+        setCurrentDayIndex(newIndex);
+    }
+}
+
+const calendarDay = (weekDay, index,matchingHabits) => {
+    return (
+        <div key={index} className='calendar-day'>
+        <div className="day-name">
+            <div className='day-header'>
+                <div className="day-dot"></div>
+                <div className='day-title'>{weekDay.name}</div>
+            </div>
+            <div className='day-date'>{weekDay.date}</div>
+        </div>
+{matchingHabits.length > 0 && (
+    <div className='habit-list-calendar'>
+    <HabitList handleToggleCompletition={props.handleToggleCompletition} matchingHabits={matchingHabits} weekDay={weekDay}/>
+    </div>
+)}
+</div>
+    )
+}
+
 useEffect(
     () => {
         const handleResize = () => {
@@ -49,30 +88,27 @@ useEffect(
     return(
         <div className='calendar-container'>
         <div className='header-calendar'>
-        <button onClick={props.handlePreviousWeek} className='arrow-button'>{"<"}</button>
-        <div className='title'>Week of {formattedStartDate}</div>
-        <button onClick={props.handleNextWeek} className='arrow-button'>{">"}</button>
+        <button onClick={isMobile?handlePreviousMobileDay:props.handlePreviousWeek} className='arrow-button'>{"<"}</button>
+        <div className='title'>{
+            isMobile ?`Day of ${props.week[currentDayIndex]?.name}`:
+            `Week of ${formattedStartDate}`}
+            </div>
+        <button onClick={isMobile?handleNextMobileDay:props.handleNextWeek} className='arrow-button'>{">"}</button>
         </div>
         <div className='calendar-week'>
-        {props.week.map((weekDay, index) =>  {
+        {
+        isMobile ?(
+            () => {
+                const weekDay = props.week[currentDayIndex];
+                const matchingHabits = getMatchingHabits(weekDay);
+                return calendarDay(weekDay,currentDayIndex, matchingHabits); 
+            }
+        ) ()    
+        :props.week.map((weekDay, index) =>  {
             const matchingHabits = getMatchingHabits(weekDay);
-            return(
-                <div key={index} className='calendar-day'>
-                            <div className="day-name">
-                                <div className='day-header'>
-                                    <div className="day-dot"></div>
-                                    <div className='day-title'>{weekDay.name}</div>
-                                </div>
-                                <div className='day-date'>{weekDay.date}</div>
-                            </div>
-                    {matchingHabits.length > 0 && (
-                        <div className='habit-list-calendar'>
-                        <HabitList handleToggleCompletition={props.handleToggleCompletition} matchingHabits={matchingHabits} weekDay={weekDay}/>
-                        </div>
-                    )}
-                    </div>
-            );
-        })}
+            return calendarDay(weekDay,index,matchingHabits);
+        })
+        }
         </div>
 
     </div>
