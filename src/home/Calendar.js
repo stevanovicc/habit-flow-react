@@ -1,8 +1,9 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import HabitList from "./HabitList";
 import "./HomePage.css";
 
 const Calendar = (props) => {
+    const [isMobile,setIsMobile] = useState(false);
 
     const formattedStartDate = new Intl.DateTimeFormat('en-US', {
         month:'long',
@@ -32,6 +33,19 @@ const getMatchingHabits = (weekDay) => {
     });
 }
 
+useEffect(
+    () => {
+        const handleResize = () => {
+            setIsMobile(window.innerWidth <= 768);
+        }
+        handleResize();
+        window.addEventListener("resize", handleResize);
+        return() =>{
+            window.removeEventListener("resize", handleResize);
+        }
+    },
+    []
+)
     return(
         <div className='calendar-container'>
         <div className='header-calendar'>
