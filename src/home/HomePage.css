@@ -274,6 +274,7 @@ body {
 }
 
 .habit-list {
+    margin-left: 1rem;
     margin-right: 5rem;
     display: flex;
     flex-direction: column;
@@ -338,7 +339,7 @@ body {
     padding: 0;
     background: none;
     border: none;
-    font-size: 0.75rem;
+    font-size: 0.6rem;
     color: red;
     cursor: pointer;
     transition: transform 0.2s ease;
