@@ -1,70 +1,70 @@
-# Getting Started with Create React App
+# HabitFlow
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+Welcome to HabitFlow, your ultimate companion for building and maintaining better habits!
 
-## Available Scripts
+HabitFlow is a sleek and intuitive React-based platform designed to help you track, manage, and improve your daily routines. Whether you’re looking to stay consistent with workouts, practice mindfulness, or simply keep tabs on your progress, our app makes it easy and enjoyable.
 
-In the project directory, you can run:
+## Why HabitFlow?
 
-### `npm start`
+- Visual Habit Tracking: Easily log and monitor your habits on an interactive calendar to see your progress at a glance.
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
+* Customizable Goals: Tailor the experience to fit your personal goals and preferences.
 
-The page will reload when you make changes.\
-You may also see any lint errors in the console.
++ User-Friendly Interface: HabitFlow’s minimalist design keeps you focused on what matters—your habits.
 
-### `npm test`
+- Motivation at Your Fingertips: Celebrate your streaks and stay inspired to keep going!
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+### Technologies Used
 
-### `npm run build`
+HabitFlow is built using modern web technologies to ensure a seamless and responsive experience:
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+- React: Provides a dynamic and interactive user interface.
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+- HTML, CSS, and JavaScript: Core web technologies used to create a smooth and visually appealing design.
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+- Firebase: Serves as the backend, handling authentication, database management, and real-time updates
 
-### `npm run eject`
+ Start your journey today and turn your goals into habits with HabitFlow. It’s time to take control of your routine and unlock your full potential!
 
-**Note: this is a one-way operation. Once you `eject`, you can't go back!**
+![screenshot of the login page](/src/components/assets/Loginpage.png)
 
-If you aren't satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+## Register Page
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you're on your own.
+The register page for HabitFlow features a clean and minimalistic design. At the top left, the HabitFlow logo is displayed, while the top right has a "Sign In" button for existing users. The main focus of the page is a centered registration form titled "Create your account."
 
-You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
+The form includes the following fields:
 
-## Learn More
+- First Name
+* Last Name
++ Email
+- Password
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
+Below the form, there's a prominent "Sign Up" button in blue, which serves as the call to action. The design is simple and functional, making it easy for users to create an account without distractions.
 
-To learn React, check out the [React documentation](https://reactjs.org/).
+![screenshot of the register page](/src/components/assets/Registerpage.png)
 
-### Code Splitting
+## Home Page
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
+The HabitFlow home page is designed to provide users with an overview of their habit progress in a structured and minimalistic manner. Here’s what it includes:
 
-### Analyzing the Bundle Size
+### Greeting & Streak Information: 
+At the top, the page greets the user by name (e.g., "Hello, Filip") and displays two key habit-tracking metrics:
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
+- 🔥 Current Streak: Indicates the number of consecutive days the user has maintained habits.
+- 🏆 Longest Streak: Shows the longest period of continuous habit completion.
+### Weekly Habit Overview: 
+Below the streak information, a horizontal weekly calendar view is displayed, showing the current week (e.g., "Week of January 27"). Each day is represented with:
 
-### Making a Progressive Web App
++ A list of habits assigned to that day.
++ Checkboxes that allow the user to mark habits as completed.
++ Red ❌ icons allowing the user to delete the habits.
++ Habits Due Today: A floating card on the left side summarizes the habits due for the current day, making it easy to focus on what needs to be done.
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
+### Action Buttons:
 
-### Advanced Configuration
+- A blue "Add a new habit" button in the top right corner lets users add new habits to their tracking system.
+- A "Sign Out" button in the top-right corner allows users to log out of their account.
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
+Overall, the layout is clean and functional, making it easy for users to track their habits visually and stay motivated.
 
-### Deployment
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
-
-### `npm run build` fails to minify
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+![screenshot of the home page](/src/components/assets/Homepage.png)
