@@ -12,6 +12,13 @@ const HabitList = (props) => {
                     <div className="habit-list-div">
                     <input className="habit-checkbox" type='checkbox' checked={isCompleted} onChange={() => props.handleToggleCompletition(habit.id, props.weekDay.rawDate)}/>
                     <label className="habit-label">{habit.name}</label>
+                    <button
+                    onClick={() => props.handleRemoveHabit(habit.id)}
+                    className="remove-habit-button"
+                    title="Remove Habit"
+                    >
+                         ❌
+                    </button>
                     </div>
                 </li>
             );

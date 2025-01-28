@@ -1,6 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import HabitList from "./HabitList";
 import "./HomePage.css";
+import { deleteDoc, doc } from 'firebase/firestore';
+import { db } from '../firebase/firebase';
 
 const Calendar = (props) => {
     const [isMobile,setIsMobile] = useState(false);
@@ -34,6 +36,21 @@ const getMatchingHabits = (weekDay) => {
     });
 }
 
+const handleRemoveHabit = async(habitId,props) => {
+    try{
+        const habitRef = doc(db,"habits",habitId);
+        await deleteDoc(habitRef);
+
+        props.setHabits((prevHabits) => prevHabits.filter(habit => habit.id !== habitId));
+
+        props.setSuccessMessage("Habit Removed succesfully");
+        setTimeout(() => props.setSuccessMessage(""), 3000);
+    }catch(error){
+        console.error("Error removing habit:", error);
+        props.setErrorMessage("Failed to remove habit.");
+    }
+};
+
 const handleNextMobileDay = () => {
     const newIndex = currentDayIndex + 1;
     if(newIndex > 6){
@@ -65,7 +82,7 @@ const calendarDay = (weekDay, index,matchingHabits) => {
         </div>
 {matchingHabits.length > 0 && (
     <div className='habit-list-calendar'>
-    <HabitList handleToggleCompletition={props.handleToggleCompletition} matchingHabits={matchingHabits} weekDay={weekDay}/>
+    <HabitList handleToggleCompletition={props.handleToggleCompletition} matchingHabits={matchingHabits} weekDay={weekDay} handleRemoveHabit={handleRemoveHabit}/>
     </div>
 )}
 </div>

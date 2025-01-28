@@ -1,7 +1,7 @@
-import React from 'react';
+import React, { useCallback } from 'react';
 import {useEffect,useState} from 'react';
 import { getAuth,onAuthStateChanged } from 'firebase/auth';
-import { getFirestore,doc,getDoc,collection, getDocs, updateDoc, where, query } from 'firebase/firestore';
+import { getFirestore,doc,getDoc,collection, getDocs, updateDoc, where, query} from 'firebase/firestore';
 import "./HomePage.css";
 import "./HabitForm";
 import HabitForm from './HabitForm';
@@ -73,13 +73,9 @@ const HomePage = () => {
                 const dateString = date.toISOString().split("T")[0];
 
                 const isCurrentlyCompleted = completedDates.includes(dateString);
-                let updatedDates;
-
-                if (isCurrentlyCompleted) {
-                    updatedDates = completedDates.filter((d) => d !== dateString);
-                } else {
-                    updatedDates = [...completedDates, dateString];
-                }
+                let updatedDates = isCurrentlyCompleted
+                    ? completedDates.filter((d) => d !== dateString)
+                    :[...completedDates, dateString];   
                 
                 const sortedDates = [...updatedDates].sort();
 
@@ -124,6 +120,11 @@ const HomePage = () => {
                     longestStreak: longestStreak,
                 });
 
+                const userRef = doc(db,"users", user.uid);
+                await updateDoc(userRef, {
+                    longestStreak: longestStreak,
+                });
+
                 setHabits((prevHabits) =>
                         prevHabits.map((habit) => 
                             habit.id === habitId
@@ -153,29 +154,51 @@ const HomePage = () => {
         longestStreak: 0,
     });
 
+    const calculateUserStreak = useCallback(() => {
+        if(habits.length === 0){
+            setUserStreak({currentStreak:0,longestStreak: userStreak.longestStreak});
+            return;
+        }
+        const allCompletedDates = habits.map((habit) => new Set(habit.completedDates || []));
+
+        const commonDates = [...allCompletedDates.reduce((a,b) => new Set([...a].filter(x => b.has(x))))];
+
+        commonDates.sort((a,b) => new Date(a) - new Date(b));
+
+        let currentStreak = 0;
+        let longestStreak = userStreak.longestStreak;
+        const todayString = new Date().toISOString().split("T")[0];
+
+        let streakIncludesToday = false;
+
+        for(let i = commonDates.length - 1; i>=0; i--) {
+            const currentDate = new Date(commonDates[i]);
+            const previousDate = new Date(commonDates[i - 1]);
+
+            if (commonDates[i] === todayString){
+                streakIncludesToday = true;
+            }
+            if(i === 0 || currentDate - previousDate > 24 * 60 * 60 * 1000){
+                currentStreak++;
+                break;
+            }
+            currentStreak++;
+        }
+        if(!streakIncludesToday){
+            currentStreak = 0;
+        }
+        longestStreak = Math.max(longestStreak,currentStreak);
+
+        setUserStreak({
+            currentStreak,
+            longestStreak,
+        });
+    }, [habits,userStreak.longestStreak]);
     useEffect(() => {
-        const calculateUserStreak = () => {
-            let totalCurrentStreak = 0;
-            let totalLongestStreak = 0;
-
-            habits.forEach((habit) => {
-                if(habit.currentStreak) {
-                    totalCurrentStreak = Math.max(totalCurrentStreak, habit.currentStreak);
-                }
-                if (habit.longestStreak) {
-                    totalLongestStreak = Math.max(totalLongestStreak, habit.longestStreak);
-                }
-            });
-
-            setUserStreak({
-                currentStreak: totalCurrentStreak,
-                longestStreak: totalLongestStreak,
-            });
-        };
-        if (habits.length > 0) {
+        if (habits.length > 0 ){
             calculateUserStreak();
         }
-    }, [habits]);
+    }, [habits,calculateUserStreak]);
 
     const handleNextWeek = () => {
         setWeekOffset(prevOffset => {
@@ -253,6 +276,10 @@ const HomePage = () => {
                     const data = userDoc.data();
                     setUserName(`${data.firstName}`);
                     fetchHabits();
+                    setUserStreak((prev) =>({
+                        ...prev,
+                        longestStreak:data.longestStreak || 0,
+                    }));
                 }
             } catch(error){
                 console.error("Error fetching user data", error);
@@ -291,7 +318,7 @@ const HomePage = () => {
             </p>
         </div>
 
-        <Calendar handlePreviousWeek={handlePreviousWeek} handleNextWeek={handleNextWeek} week={week} habits={habits} handleToggleCompletition={handleToggleCompletition}></Calendar>
+        <Calendar handlePreviousWeek={handlePreviousWeek} handleNextWeek={handleNextWeek} week={week} habits={habits} handleToggleCompletition={handleToggleCompletition} setHabits={setHabits} setSuccessMessage={setSuccessMessage} setErrorMessage={setErrorMessage}></Calendar>
         {showDueTodayMessage && (
             <DueToday setShowDueTodayMessage={setShowDueTodayMessage} habitsDueToday={habitsDueToday}/>
         )}
