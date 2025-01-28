@@ -318,7 +318,7 @@ const HomePage = () => {
             </p>
         </div>
 
-        <Calendar handlePreviousWeek={handlePreviousWeek} handleNextWeek={handleNextWeek} week={week} habits={habits} handleToggleCompletition={handleToggleCompletition} setHabits={setHabits} setSuccessMessage={setSuccessMessage} setErrorMessage={setErrorMessage}></Calendar>
+        <Calendar handlePreviousWeek={handlePreviousWeek} handleNextWeek={handleNextWeek} week={week} habits={habits} handleToggleCompletition={handleToggleCompletition} setHabits={setHabits}></Calendar>
         {showDueTodayMessage && (
             <DueToday setShowDueTodayMessage={setShowDueTodayMessage} habitsDueToday={habitsDueToday}/>
         )}

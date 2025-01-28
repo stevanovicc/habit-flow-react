@@ -42,12 +42,9 @@ const handleRemoveHabit = async(habitId,props) => {
         await deleteDoc(habitRef);
 
         props.setHabits((prevHabits) => prevHabits.filter(habit => habit.id !== habitId));
-
-        props.setSuccessMessage("Habit Removed succesfully");
-        setTimeout(() => props.setSuccessMessage(""), 3000);
     }catch(error){
         console.error("Error removing habit:", error);
-        props.setErrorMessage("Failed to remove habit.");
+        alert("Habit removed succesfully!");
     }
 };
 
